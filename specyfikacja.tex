@@ -1,11 +1,11 @@
 \documentclass[a4paper]{article}
 
 \usepackage{polski}
-\usepackage[utf8x]{inputenc}
-\usepackage[OT4]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex]{hyperref}
+\usepackage[ampersand]{easylist}
 
 \title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
 \author{Zespół Projektowy}
@@ -13,168 +13,199 @@
 
 \begin{document}
 
+\maketitle
+\tableofcontents
+
 Opis funkcjonalny Systemu
 
 \section{Wstęp}
 
-Od strony funkcjonalnej system składa się z 2 niezależnych podsystemów działających na 
-tej samej platformie sprzętowej: Podsystem Elektronicznego Zlecania Opisów Badań 
-Medycznych oraz Podsystem Elektronicznej Wymiany Danych Medycznych. 
-
-\section{Założenia wspólne dla obu podsystemów}
-
-\subsection{Architektura fizyczna }
-
-System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 
-2 rodzaje węzłów: centralny i lokalny. W sieci (konfederacji?) występuje jeden węzeł 
-centralny i wiele węzłów lokalnych. Każdy węzeł lokalny komunikuje się z węzłem 
-centralnym i wybranymi przez siebie węzłami lokalnymi. Węzeł lokalny musi być możliwy 
-do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym 
-systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej. Węzeł centralny może 
-składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych. 
-
-\subsection{Ochrona danych osobowych}
-
-System nie gromadzi danych osobowych ani danych wrażliwych.
-
-\subsection{Rejestracja przebiegu procesów oraz raportowanie}
-
-Przebieg wszystkich procesów realizowanych przez węzły lokalne oraz węzeł 
-centralny musi być rejestrowany w sposób umożliwiający: 
-\begin{itemize}
-  \item prowadzenie rozliczeń finansowych pomiędzy zlecającymi i konsultantami,
-  \item przeprowadzenie audytu poprawności przebiegu procesów.
-\end{itemize}
-
-\section{Założenia co do funkcjonalności Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
-
-Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecanie między sobą opisów 
-badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węzła centralnego, który 
-dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający treść 
-zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
+Od strony funkcjonalnej system składa się z 2 niezależnych podsystemów działających na tej samej platformie sprzętowej: Podsystem Elektronicznego Zlecania Opisów Badań Medycznych (zwany danej Systemem Zlecania) oraz Podsystem Elektronicznej Wymiany Danych Medycznych (zwany dalej Bazą Metadanych).
 
 \subsection{Definicje}
 
 \begin{description}
 \item[Zleceniodawca] użytkownik węzła lokalnego zlecający do systemu wykonanie opisu badania
 \item[Konsultant] użytkownik węzła lokalnego realizujący zlecenie opisu badania, które pojawiło się na jego węźle
+\item[Zlecenie] zlecenie opisu badania
+\item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny na informacje o węzłach lokalnych i łączność z nimi
+\item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z lokalnymi systemami szpitalnymi
 \end{description}
+
+\section{Założenia wspólne dla obu podsystemów}
+
+\subsection{Architektura fizyczna}
+\label{sec:arch_fiz}
+
+System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 2 rodzaje węzłów: centralny i lokalny. W sieci (konfederacji?) występuje jeden węzeł centralny i wiele węzłów lokalnych. Każdy węzeł lokalny komunikuje się z węzłem centralnym i wybranymi przez siebie węzłami lokalnymi. Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej. Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych. 
+
+%% --------------- Akapit testowy --------------
+Testowe odwołanie do sekcji \ref{sec:arch_fiz}. Odwoływać się można do różnych elementów. Np. do rysunków, tabel itp. Jest też możliwość odwołania się do numeru strony, na której obiekt się znajduje. Uwaga dla początkujących: czasem trzeba dokument wyrenderować 2 razy aby w pełni zaktualizowały się odnośniki i wszelkiego rodzaju spisy (np. spis treści).
+\footnote{Jeśli renderujemy do PDF'a, to referencje mogą być linkami. Kliknięcie w link będzie powodowało przewinięcie dokumentu do linkowanego obiektu}
+%%-----------------------------------------------
+
+\subsection{Konfigurowalność}
+
+TODO Co musi być konfigurowalne (wspólne dla obu podsystemów)
+
+\subsection{Ochrona danych osobowych}
+
+Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych u których są zainstalowane mogą przetwarzać dane osobowe.
+
+\subsection{Rejestracja przebiegu procesów oraz raportowanie}
+
+Przebieg wszystkich procesów realizowanych przez węzły lokalne oraz węzeł 
+centralny musi być rejestrowany w sposób umożliwiający: 
+\begin{enumerate}
+  \item prowadzenie rozliczeń finansowych pomiędzy zlecającymi i konsultantami,
+  \item przeprowadzenie audytu poprawności przebiegu procesów,
+  \item stwierdzenie kto i jakie dane przeglądał i modyfikował.
+\end{enumerate}
+
+%--------------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------------------------
+\section{Wymagana funkcjonalność Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
+
+Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecanie między sobą opisów badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węzła centralnego, który dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
+
+\subsection{Wymagania ogólne}
+\begin{enumerate}
+\item Co najmniej 3 poziomy dostępu:
+        \begin{enumerate}
+        \item technik -- może tworzyć zlecenia, ale nie może ich wysłać,
+        \item lekarz (zleceniodawca) -- to co technik + możliwość wysyłania zleceń,
+        \item administrator -- ma możliwość zmiany konfiguracji systemu i ew. poprawiania danych poza produkcyjnym schematem działania.
+        \end{enumerate}
+\item Routingiem zleceń zajmuje się węzeł centralny.
+\item Na węźle centralnym nie pojawiają się dane wrażliwe i osobowe.
+\item W celu wymiany danych wrażliwych węzły lokalne komunikują się bezpośrednio między sobą.
+\item Komunikaty sygnalizacyjne przechodzą przez węzeł centralny.
+\item Węzeł centralny posiada pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach jak i o zleceniach przetworzonych w przeszłości.
+\end{enumerate}
+
+\subsection{Definicja zlecenia}
+
+Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów.
+
+TODO opis atrybutów zlecenia
+
+\subsection{Routing zleceń}
+
+TODO jak ma działać routing zleceń
 
 \subsection{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
 
 Węzeł lokalny musi mieć możliwość komunikacji z lokalnym systemem PACS w celu:
-\begin{itemize}
+\begin{enumerate}
  \item po stronie zleceniodawcy: pozyskania wyników badania, które ma być opisane,
  \item po stronie konsultanta: przesłania wyników badania na stację diagnostyczną.
-\end{itemize}
+\end{enumerate}
 
-Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność 
-potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. 
-Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania 
-z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał 
-zbędnych trudności przy integracji z takimi systemami jak: ........
+Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał zbędnych trudności przy integracji z takimi systemami jak: TODO lista systemów, 
 
 Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
-\begin{itemize}
+\begin{enumerate}
   \item aktywne odpytanie systemu PACS i pobranie plików do bufora na węźle lokalnym
-  \item pasywne oczekiwanie na dostarczenie plików przez PACS lib inny węzeł DICOM; dostarczone 
-	pliki zapisywane są w buforze na węźle lokalnym
-\end{itemize}
+  \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym
+\end{enumerate}
 
 \subsection{Interfejs użytkownika}
 
-Wymagany jest webowy interfejs użytkownika do realizacji wszystkich podstawowych funkcji systemu. 
-Możliwe jest zastosowanie również dodatkowych niewebowych interfejsów użytkownika. Każdy z węzłów 
-lokalnych oraz węzeł centralny muszą mieć swoje własne interfejsy użytkownika.
+Wymagany jest webowy interfejs użytkownika do realizacji wszystkich podstawowych funkcji systemu. Możliwe jest zastosowanie również dodatkowych niewebowych interfejsów użytkownika. Każdy z węzłów lokalnych oraz węzeł centralny muszą mieć swoje własne interfejsy użytkownika.
 
 Wymagania dla webowego interfejsu użytkownika:
 
-\begin{itemize}
+\begin{enumerate}
     \item neutralność technologiczna zapewniona poprzez:
-	  \begin{itemize}
-	  \item poprawne działać na najnowszej na dzień ogłoszenia przetargu wersji
-		  wieloplatformowych przeglądarek WWW Mozilla Firefox oraz Google Chrome
-	  \item realizację wszystkich podstawowych funkcji interfejsu użytkownika
-		  bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek 
-		  specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
-	  \end{itemize}
+	  \begin{enumerate}
+	  \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji wieloplatformowych przeglądarek WWW Mozilla Firefox oraz Google Chrome
+	  \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
+	  \end{enumerate}
     \item sprawność działania zapewniona poprzez:
-	  \begin{itemize}
-	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z 
-		użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej 
-		czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
-	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na 
-		akcję użytkownika - interfejs użytkownika musi sprawnie działać [określić, co to 
-		znaczy sprawnie działać] w przeglądarce uruchomionej na komputerze z procesorem o 
-		wydajności KKK i 360 MB pamięci RAM dostępnej dla przeglądarki 
-	  \end{itemize}
-\end{itemize}
+	  \begin{enumerate}
+	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
+	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać [określić, co to znaczy sprawnie działać] w przeglądarce uruchomionej na komputerze z procesorem o wydajności KKK i 360 MB pamięci RAM dostępnej dla przeglądarki
+	  \end{enumerate}
+\end{enumerate}
 
 Podstawowe funkcje interfejsu użytkownika:
-\begin{itemize}
+\begin{enumerate}
   \item Tworzenie zlecenia:
-      \begin{itemize}
+      \begin{enumerate}
       \item przy tworzeniu zlecenia użytkownik musi mieć możliwość dostarczenia kompletnej definicji zlecenia (patrz opis treści zlecenia)
-      \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan 
-	    skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów 
-	    dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się 
-	    w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie 
-	    pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
-      \end{itemize}
+      \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
+      \end{enumerate}
   \item Wysyłanie zlecenia:
-\end{itemize}
+\end{enumerate}
 
+\subsection{Schemat pracy}
+\begin{enumerate}
+\item Użytkownik łączy się przeglądarką WWW z lokalnym interfejsem Systemu, loguje się do niego i ma możliwość:
+        \begin{enumerate}
+        \item przejrzenia stanu aktualnych (będących w trakcie przetwarzania) zleceń,
+        \item modyfikacji aktualnych, niezakończonych zleceń,
+        \item przeglądania zleceń archiwalnych,
+        \item stworzenia nowego zlecenia,
+        \item wysłania gotowego zlecenia,
+        \item realizacji zlecenia (opisania badania).
+        \end{enumerate}
+\item W ramach tworzenia/modyfikacji zlecenia użytkownik może:
+        \begin{enumerate}
+        \item wybrać pliki DICOM (pogrupowane np. wg. StudyUID, albo nazwy pacjenta) znajdujące się w buforze na węźle (pliki do bufora trafiają w wyniku wysłania ich do węzła z poziomu systemu PACS)
+        \item wyszukać i pobrać pliki DICOM bezpośrednio z PACS
+        \item wysłać poprzez interfejs web plik istniejący na terminalu użytkownika
+        \item zmodyfikować wszystkie istotne na tym etapie parametry zlecenia
+        \end{enumerate}
+\end{enumerate}
+
+\subsection{Konfigurowalność}
+
+TODO Co musi być konfigurowalne w systemie zlecania 
+TODO konfigurowalność interfejsu HL7
+
+%--------------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------------------------
 \section{Wymagana funkcjonalność Podsystemu Elektronicznej Wymiany Danych Medycznych}
 
 \subsection{Definicje}
 \begin{description}
-\item[poszukujący informacji o pacjencie] – użytkownik węzła lokalnego, który chce pozyskać ewentualne dane o pacjencie
-	składowane w innych Szpitalnych Systemach Informatycznych 
+\item[poszukujący informacji o pacjencie] – użytkownik węzła lokalnego, który chce pozyskać ewentualne dane o pacjencie składowane w innych Szpitalnych Systemach Informatycznych
 \end{description}
 
 \subsection{Opis węzła Centralnego}
 Węzeł ma za zadanie:
-\begin{itemize}
+\begin{enumerate}
 \item utrzymywać bazę danych zawierającą jednoznaczne identyfikatory pacjentów połączone z informacją o węźle lokalnym, z którego one pochodzą
 \item nie przechowuje danych osobowych, ani danych wrażliwych. Ww. identyfikatory bedą odwzorowaniami identyfikatorów pacjentów sosowanych w lokalnych szpitalnych systemach informatycznych. Odwzorowania te będą wykonywane przez oprogramowanie węzłów lokalnych
 \item obsługiwać zapytania kierowane z wezłów lokalnych poszukujących danych medycznych o pacjencie. Obsługa takigo zapytania ma polegać na przesłaniu w odpowiedzi informacji o wszystkich lokalnych węzłach, które posiadają informacje o zdarzeniach dotyczących tego pacjenta. Dalsza wymiana informacji odbywa się bez udziału węzła centralnego – bezpośrednio pomiędzy węzłami lokalnymi
 \item jako opcja węzeł centralny synchronizuje swoją bazę danych odwzorowań (pacjentów) z węzłami loalnymi, żeby przyspieszyć proces realizacji zapytań
-\end{itemize}
+\end{enumerate}
 
 \subsection{Opis węzła lokalnego}
 Węzeł ma spełniać funkcje:
-\begin{itemize}
+\begin{enumerate}
 \item komunikacja z isniejącymi lokalnymi systemami szpitalnymi:
-  \begin{itemize}
-  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą 
-	  się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celyu trzeba przewidzieć 
-	  w tworzonym oprogramowaniu interfejs do tworzenia stadaryzacji danych osobowych postaci jednolitej 
-	  dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania 
-	  na jednoznaczny identyfikator pacjenta na poziomie systemu
+  \begin{enumerate}
+  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą  się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celyu trzeba przewidzieć w tworzonym oprogramowaniu interfejs do tworzenia stadaryzacji danych osobowych postaci jednolitej dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania na jednoznaczny identyfikator pacjenta na poziomie systemu
   \item ma za zadanie przyjmować od oprogramowania szpitalnego informacje o zajściu zdarzenia dot. pacjenta (np. poprzez HL7)
-  \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując 
-	  ich zapytanie. W tym celu po zidetyfikowniu pacjenta wysyła do takiego systemu linki do lokalnych 
-	  plików (np. DICOM) z jego danymi medycznymi
-  \end{itemize}
+  \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując ich zapytanie. W tym celu po zidetyfikowniu pacjenta wysyła do takiego systemu linki do lokalnych plików (np. DICOM) z jego danymi medycznymi
+  \end{enumerate}
 
 \item komunikacja z węzłem centralnym
-  \begin{itemize}
+  \begin{enumerate}
   \item przekazywane są powiązania informacje o jednoznacznych identyfiaktorach pacjentów
   \item opcjonalnie następuje sychnchronizacja z węzłem centralnym, o kótrej mowa w pkt. 4.2.4.
-  \end{itemize}
+  \end{enumerate}
 
 \item komunikacja z innymi węzłami lokalnymi
-  \begin{itemize}
+  \begin{enumerate}
   \item udostępnianie danych medycznych pacjentów innym węzłom lokalnym jak opisane w pkt.  4.3.1.3.
   \item pobieranie danych z innych węzłów lokalnych
-  \end{itemize}
-\end{itemize}
+  \end{enumerate}
+\end{enumerate}
 
-Ponadto komunikacja pomiędzy węzłami lokalnymi między sobą, jak i pomiędzy nimi, a węzłem głównym musi 
-być zabezpieczona przez zestawienie bezpiecznego tunelu VPN na poziomie sieci komputerowej (site-to-site, 
-'przeroczysty' VPN) lub jeśli to nie jest możliwe na poziomie węzła (client-to-site VPN)
+Ponadto komunikacja pomiędzy węzłami lokalnymi między sobą, jak i pomiędzy nimi, a węzłem głównym musi być zabezpieczona przez zestawienie bezpiecznego tunelu VPN na poziomie sieci komputerowej (site-to-site, 'przeroczysty' VPN) lub jeśli to nie jest możliwe na poziomie węzła (client-to-site VPN)
 
-Transmisja danych musi zapewniać intgeralność, poufność i autentyczność przesyłanych danych. 
-Można to zpewnić przez bezpośredni tunel VPN pomiędzy węzłami lokalnymi.
+Transmisja danych musi zapewniać intgeralność, poufność i autentyczność przesyłanych danych. Można to zpewnić przez bezpośredni tunel VPN pomiędzy węzłami lokalnymi.
 
 \end{document}
