@@ -5,7 +5,6 @@
 \usepackage[polish]{babel}
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex]{hyperref}
-\usepackage[ampersand]{easylist}
 
 \title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
 \author{Zespół Projektowy}
@@ -20,16 +19,18 @@ Opis funkcjonalny Systemu
 
 \section{Wstęp}
 
-Od strony funkcjonalnej system składa się z 2 niezależnych podsystemów działających na tej samej platformie sprzętowej: Podsystem Elektronicznego Zlecania Opisów Badań Medycznych (zwany danej Systemem Zlecania) oraz Podsystem Elektronicznej Wymiany Danych Medycznych (zwany dalej Bazą Metadanych).
+Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów działających na tej samej platformie sprzętowej i programowej: Podsystem Elektronicznego Zlecania Opisów Badań Medycznych (zwany danej Systemem Zlecania) oraz Podsystem Elektronicznej Wymiany Danych Medycznych (zwany dalej Bazą Metadanych).
 
 \subsection{Definicje}
 
 \begin{description}
+\item[System] centralny system telemedyczny, będący przedmiotem tej specyfikacji
 \item[Zleceniodawca] użytkownik węzła lokalnego zlecający do systemu wykonanie opisu badania
 \item[Konsultant] użytkownik węzła lokalnego realizujący zlecenie opisu badania, które pojawiło się na jego węźle
-\item[Zlecenie] zlecenie opisu badania
-\item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny na informacje o węzłach lokalnych i łączność z nimi
-\item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z lokalnymi systemami szpitalnymi
+\item[Zlecenie] zlecenie opisu badania medycznego
+\item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny posiada informacje o węzłach lokalnych i ma stałą łączność z nimi
+\item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z LSS
+\item[LSS] lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7
 \end{description}
 
 \section{Założenia wspólne dla obu podsystemów}
@@ -37,12 +38,32 @@ Od strony funkcjonalnej system składa się z 2 niezależnych podsystemów dzia�
 \subsection{Architektura fizyczna}
 \label{sec:arch_fiz}
 
-System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 2 rodzaje węzłów: centralny i lokalny. W sieci (konfederacji?) występuje jeden węzeł centralny i wiele węzłów lokalnych. Każdy węzeł lokalny komunikuje się z węzłem centralnym i wybranymi przez siebie węzłami lokalnymi. Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej. Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych. 
+System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 2 rodzaje węzłów: centralny i lokalny. W sieci, zwanej konfederacją, występuje jeden węzeł centralny i wiele węzłów lokalnych. 
+
+\subsubsection{Węzeł centralny}
+Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych działających na 4 serwerach fizycznych i na tych zasobach sprzętowych musi zapewniać taką 
+niezawodność, że awaria jednego serwera fizycznego nie powoduje utraty funkcjonalności Systemu. Obsługa
+awarii pojedynczego serwera musi być tak zrealizowana, że przerwa w działaniu węzła centralnego nie będzie dłuższa niż 10 sekund.
+
+Węzeł centralny ma łączność z Internetem i jest widoczny pod publicznym adresem IP. Węzeł centralny poprzez Internet komunikuje się ze wszystkimi węzłami lokalnymi.
+
+\subsubsection{Węzeł lokalny}
+Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej i ma łączność z LSS oraz z Internetem. Na styku z Internetem jest widoczny pod publicznym adresem IP. Każdy węzeł lokalny poprzez Internet komunikuje się z węzłem centralnym i wybranymi węzłami lokalnymi.  
 
 %% --------------- Akapit testowy --------------
 Testowe odwołanie do sekcji \ref{sec:arch_fiz}. Odwoływać się można do różnych elementów. Np. do rysunków, tabel itp. Jest też możliwość odwołania się do numeru strony, na której obiekt się znajduje. Uwaga dla początkujących: czasem trzeba dokument wyrenderować 2 razy aby w pełni zaktualizowały się odnośniki i wszelkiego rodzaju spisy (np. spis treści).
 \footnote{Jeśli renderujemy do PDF'a, to referencje mogą być linkami. Kliknięcie w link będzie powodowało przewinięcie dokumentu do linkowanego obiektu}
 %%-----------------------------------------------
+
+\subsection{Bezpieczeństwo sieciowe}
+Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
+\begin{enumerate}
+\item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, remote API itp) muszą posiadać zabezpieczenia
+pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania;
+komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
+\item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego
+dany interfejs.
+\end{enumerate}
 
 \subsection{Konfigurowalność}
 
@@ -50,7 +71,7 @@ TODO Co musi być konfigurowalne (wspólne dla obu podsystemów)
 
 \subsection{Ochrona danych osobowych}
 
-Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych u których są zainstalowane mogą przetwarzać dane osobowe.
+Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych, u których są zainstalowane mogą przetwarzać dane osobowe.
 
 \subsection{Rejestracja przebiegu procesów oraz raportowanie}
 
@@ -73,8 +94,8 @@ Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecani
 \item Co najmniej 3 poziomy dostępu:
         \begin{enumerate}
         \item technik -- może tworzyć zlecenia, ale nie może ich wysłać,
-        \item lekarz (zleceniodawca) -- to co technik + możliwość wysyłania zleceń,
-        \item administrator -- ma możliwość zmiany konfiguracji systemu i ew. poprawiania danych poza produkcyjnym schematem działania.
+        \item lekarz (zleceniodawca) -- uprawnienia technika + możliwość wysyłania zleceń,
+        \item administrator -- ma możliwość zmiany konfiguracji systemu i ingerencji w dane poza produkcyjnym schematem działania.
         \end{enumerate}
 \item Routingiem zleceń zajmuje się węzeł centralny.
 \item Na węźle centralnym nie pojawiają się dane wrażliwe i osobowe.
@@ -87,7 +108,15 @@ Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecani
 
 Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów.
 
-TODO opis atrybutów zlecenia
+Zlecenie powinno posiadać co najmniej następujące atrybuty:
+\begin{enumerate}
+\item globalnie unikatowy numer zlecenia
+\item zanonimizowane dane o pacjencie, takie jak wiek, czy płeć
+\item treść definiująca co ma być opisane
+\item określenie odbiorcy zlecenia
+\item określenie usługi do której zlecenie jest kierowane
+\item określenie priorytetu obsługi
+\end{enumerate}
 
 \subsection{Routing zleceń}
 
