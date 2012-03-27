@@ -72,7 +72,9 @@ TODO Co musi być konfigurowalne (wspólne dla obu podsystemów)
 
 \subsection{Ochrona danych osobowych}
 
-Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych, u których są zainstalowane mogą przetwarzać dane osobowe.
+Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne,
+będące pod zarządem jednostek medycznych, u których są zainstalowane mogą
+przetwarzać dane osobowe.
 
 \subsection{Rejestracja przebiegu procesów oraz raportowanie}
 
@@ -86,7 +88,7 @@ centralny musi być rejestrowany w sposób umożliwiający:
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
-\section{Wymagana funkcjonalność Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
+\section[Podsystem Elektronicznego Zlecania Opisów Badań Medycznych]{Wymagana funkcjonalność Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
 
 Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecanie między sobą opisów badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węzła centralnego, który dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
 
@@ -195,36 +197,70 @@ TODO konfigurowalność interfejsu HL7
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
-\section{Wymagana funkcjonalność Podsystemu Elektronicznej Wymiany Danych Medycznych}
+\section[Podsystem Elektronicznej Wymiany Danych Medycznych]{Wymagana funkcjonalność Podsystemu Elektronicznej Wymiany Danych Medycznych}
 
 \subsection{Definicje}
 \begin{description}
-\item[poszukujący informacji o pacjencie] – użytkownik węzła lokalnego, który chce pozyskać ewentualne dane o pacjencie składowane w innych Szpitalnych Systemach Informatycznych
+\item[użytkownik] Uprawniony pracownik jednostki medycznej posiadającej węzeł lokalny, który chce pozyskać dane
+      medyczne dostępne w innych jednostkach medycznych.
+\item[dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS (zwykle będą to pliki DICOM).
+\item[identyfikator pacjenta] Identyfikator pacjenta używany w LSS. Identyfikator pacjenta zawsze występuje w kontekście
+      konkretnego LSS, a bez niego nie ma znaczenia.
+\item[baza informacji o danych medycznych] Baza danych zawierająca informacje o danych medycznych dostępnych poprzez węzły lokalne.
+      Baza zawiera identyfikatory pacjentów oraz odnośniki do powiązanych z tymi identyfikatorami danych medycznych.
+\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS.
 \end{description}
 
-\subsection{Opis węzła Centralnego}
-Węzeł ma za zadanie:
+\subsection{Schemat działania}
+
 \begin{enumerate}
-\item utrzymywać bazę danych zawierającą jednoznaczne identyfikatory pacjentów połączone z informacją o węźle lokalnym, z którego one pochodzą
-\item nie przechowuje danych osobowych, ani danych wrażliwych. Ww. identyfikatory bedą odwzorowaniami identyfikatorów pacjentów sosowanych w lokalnych szpitalnych systemach informatycznych. Odwzorowania te będą wykonywane przez oprogramowanie węzłów lokalnych
-\item obsługiwać zapytania kierowane z wezłów lokalnych poszukujących danych medycznych o pacjencie. Obsługa takigo zapytania ma polegać na przesłaniu w odpowiedzi informacji o wszystkich lokalnych węzłach, które posiadają informacje o zdarzeniach dotyczących tego pacjenta. Dalsza wymiana informacji odbywa się bez udziału węzła centralnego – bezpośrednio pomiędzy węzłami lokalnymi
-\item jako opcja węzeł centralny synchronizuje swoją bazę danych odwzorowań (pacjentów) z węzłami loalnymi, żeby przyspieszyć proces realizacji zapytań
+  \item Użytkownik uwierzytelnia się w systemie i uzyskuje dostęp do interfejsu użytkownika.
+  \item Użytkownik wprowadza do węzła lokalnego dane osobowe pacjenta, którego dane medyczne są poszukiwane.
+  \item Węzeł lokalny wysyła zapytanie do węzła centralnego i oczekuje na wyniki.
+  \item Po otrzymaniu wyników, węzeł lokalny prezentuje użytkownikowi listę dostępnych danych medycznych.
+  \item Użytkownik wybiera, które dane medyczne chce przejrzeń, a następnie pozyskuje je bezpośrednio od
+        zdalnego węzła lokalnego, który je udostępnia.
+\end{enumerate}
+
+\subsection{Opis węzła centralnego}
+Zadania węzła centralnego:
+\begin{enumerate}
+\item utrzymanie bazy informacji o danych medycznych,
+\item utrzymanie bazy powiązań identyfikatorów,
+\item routing zapytań,
+\item przyjmowanie od węzłów lokalnych informacji o dostępnych danych medycznych,
+\item przyjmowanie od węzłów lokalnych informacji o powiązaniach identyfikatorów pacjentów,
 \end{enumerate}
 
 \subsection{Opis węzła lokalnego}
-Węzeł ma spełniać funkcje:
+Zadania węzła lokalnego:
 \begin{enumerate}
-\item komunikacja z isniejącymi lokalnymi systemami szpitalnymi:
+\item Udostępnianie interfejsu użytkownika niezbędnego do prowadzania danych osobowych pacjentów
+      oraz przeglądania pozyskanych danych medycznych.
+\item Informowanie węzła centralnego o dostępnych w LSS danych medycznych (budowa bazy informacji o danych medycznych)
+\item Informowanie węzła centralnego o odkrytych powiązaniach między identyfikatorami pacjentów
+\item Udostępnianie danych medycznych uprawnionym zdalnym węzłom lokalnym
+
+% tutaj skończyłem - seweryn
+
+\item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
   \begin{enumerate}
-  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą  się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celyu trzeba przewidzieć w tworzonym oprogramowaniu interfejs do tworzenia stadaryzacji danych osobowych postaci jednolitej dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania na jednoznaczny identyfikator pacjenta na poziomie systemu
-  \item ma za zadanie przyjmować od oprogramowania szpitalnego informacje o zajściu zdarzenia dot. pacjenta (np. poprzez HL7)
-  \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując ich zapytanie. W tym celu po zidetyfikowniu pacjenta wysyła do takiego systemu linki do lokalnych plików (np. DICOM) z jego danymi medycznymi
+  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą
+        się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celu trzeba przewidzieć
+        w tworzonym oprogramowaniu interfejs do tworzenia standaryzacji danych osobowych postaci jednolitej
+        dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania
+        na jednoznaczny identyfikator pacjenta na poziomie systemu
+  \item ma za zadanie przyjmować od oprogramowania szpitalnego informacje o zajściu zdarzenia dot.
+        pacjenta (np. poprzez HL7)
+  \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując
+        ich zapytanie. W tym celu po zidentyfikowaniu pacjenta wysyła do takiego systemu linki do lokalnych
+        plików (np. DICOM) z jego danymi medycznymi
   \end{enumerate}
 
 \item komunikacja z węzłem centralnym
   \begin{enumerate}
-  \item przekazywane są powiązania informacje o jednoznacznych identyfiaktorach pacjentów
-  \item opcjonalnie następuje sychnchronizacja z węzłem centralnym, o kótrej mowa w pkt. 4.2.4.
+  \item przekazywane są powiązania informacje o jednoznacznych identyfikatorach pacjentów
+  \item opcjonalnie następuje synchronizacja z węzłem centralnym, o której mowa w pkt. 4.2.4.
   \end{enumerate}
 
 \item komunikacja z innymi węzłami lokalnymi
@@ -234,8 +270,8 @@ Węzeł ma spełniać funkcje:
   \end{enumerate}
 \end{enumerate}
 
-Ponadto komunikacja pomiędzy węzłami lokalnymi między sobą, jak i pomiędzy nimi, a węzłem głównym musi być zabezpieczona przez zestawienie bezpiecznego tunelu VPN na poziomie sieci komputerowej (site-to-site, 'przeroczysty' VPN) lub jeśli to nie jest możliwe na poziomie węzła (client-to-site VPN)
+Ponadto komunikacja pomiędzy węzłami lokalnymi między sobą, jak i pomiędzy nimi, a węzłem głównym musi być zabezpieczona przez zestawienie bezpiecznego tunelu VPN na poziomie sieci komputerowej (site-to-site, 'przezroczysty' VPN) lub jeśli to nie jest możliwe na poziomie węzła (client-to-site VPN)
 
-Transmisja danych musi zapewniać intgeralność, poufność i autentyczność przesyłanych danych. Można to zpewnić przez bezpośredni tunel VPN pomiędzy węzłami lokalnymi.
+Transmisja danych musi zapewniać integralność, poufność i autentyczność przesyłanych danych. Można to zapewnić przez bezpośredni tunel VPN pomiędzy węzłami lokalnymi.
 
 \end{document}
