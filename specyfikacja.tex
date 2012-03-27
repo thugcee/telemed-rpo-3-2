@@ -5,6 +5,7 @@
 \usepackage[polish]{babel}
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex]{hyperref}
+\usepackage{mdwlist}
 
 \title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
 \author{Zespół Projektowy}
@@ -109,14 +110,14 @@ Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecani
 Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów.
 
 Zlecenie powinno posiadać co najmniej następujące atrybuty:
-\begin{enumerate}
+\begin{enumerate*}
 \item globalnie unikatowy numer zlecenia
 \item zanonimizowane dane o pacjencie, takie jak wiek, czy płeć
 \item treść definiująca co ma być opisane
 \item określenie odbiorcy zlecenia
 \item określenie usługi do której zlecenie jest kierowane
 \item określenie priorytetu obsługi
-\end{enumerate}
+\end{enumerate*}
 
 \subsection{Routing zleceń}
 
