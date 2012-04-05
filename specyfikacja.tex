@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{report}
 
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
@@ -6,23 +6,22 @@
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex]{hyperref}
 \usepackage{mdwlist}
+\usepackage{bm}
+
+\begin{document}
 
 \title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
 \author{Zespół Projektowy}
 \date{03/03/2012}
-
-\begin{document}
-
 \maketitle
+
 \tableofcontents
 
-Opis funkcjonalny Systemu
-
-\section{Wstęp}
+\chapter{Założenia ogólne}
 
 Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów działających na tej samej platformie sprzętowej i programowej: Podsystem Elektronicznego Zlecania Opisów Badań Medycznych (zwany danej Systemem Zlecania) oraz Podsystem Elektronicznej Wymiany Danych Medycznych (zwany dalej Bazą Metadanych).
 
-\subsection{Definicje}
+\section{Definicje}
 
 \begin{description}
 \item[System] centralny system telemedyczny, będący przedmiotem tej specyfikacji
@@ -34,21 +33,19 @@ Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów 
 \item[LSS] lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7
 \end{description}
 
-\section{Założenia wspólne dla obu podsystemów}
-
-\subsection{Architektura fizyczna}
+\section{Architektura fizyczna}
 \label{sec:arch_fiz}
 
 System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 2 rodzaje węzłów: centralny i lokalny. W sieci, zwanej konfederacją, występuje jeden węzeł centralny i wiele węzłów lokalnych. 
 
-\subsubsection{Węzeł centralny}
+\subsection{Węzeł centralny}
 Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych działających na 4 serwerach fizycznych i na tych zasobach sprzętowych musi zapewniać taką 
 niezawodność, że awaria jednego serwera fizycznego nie powoduje utraty funkcjonalności Systemu. Obsługa
 awarii pojedynczego serwera musi być tak zrealizowana, że przerwa w działaniu węzła centralnego nie będzie dłuższa niż 10 sekund.
 
 Węzeł centralny ma łączność z Internetem i jest widoczny pod publicznym adresem IP. Węzeł centralny poprzez Internet komunikuje się ze wszystkimi węzłami lokalnymi.
 
-\subsubsection{Węzeł lokalny}
+\subsection{Węzeł lokalny}
 Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej i ma łączność z LSS oraz z Internetem. Na styku z Internetem jest widoczny pod publicznym adresem IP. Każdy węzeł lokalny poprzez Internet komunikuje się z węzłem centralnym i wybranymi węzłami lokalnymi.  
 
 %% --------------- Akapit testowy --------------
@@ -56,7 +53,7 @@ Testowe odwołanie do sekcji \ref{sec:arch_fiz}. Odwoływać się można do ró�
 \footnote{Jeśli renderujemy do PDF'a, to referencje mogą być linkami. Kliknięcie w link będzie powodowało przewinięcie dokumentu do linkowanego obiektu}
 %%-----------------------------------------------
 
-\subsection{Bezpieczeństwo sieciowe}
+\section{Bezpieczeństwo sieciowe}
 Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
 \begin{enumerate}
 \item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, remote API itp) muszą posiadać zabezpieczenia
@@ -66,38 +63,73 @@ komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfro
 dany interfejs.
 \end{enumerate}
 
-\subsection{Konfigurowalność}
+\section{Konfigurowalność}
 
-TODO Co musi być konfigurowalne (wspólne dla obu podsystemów)
+\begin{enumerate}
+  \item Możliwość zdefiniowania wyglądu użytkownika za pomocą CSS (Cascading Style Sheets).
 
-\subsection{Ochrona danych osobowych}
+  Wszystkie pliki \emph{css} muszą znajdować się w specjalnie do tego przeznaczonym katalogu (i ewentualnie
+  jego podkatalogach) oraz być dostępne dla administratora węzła do modyfikacji. Z nazw plików musi wynikać
+  ich przeznaczenie. Używane nazwy klas i identyfikatory obiektów muszą być w miarę możliwości czytelne
+  dla człowieka.
+
+  \item Możliwość określenia bogato sformatowanej treści, która pojawia się jako pierwszy ekran systemu
+  i zawiera formularz logowania do systemu lub w przypadku uwierzytelniania za pomocą certyfikatów X.509,
+  przycisk wejścia do systemu.
+
+\end{enumerate}
+
+\section{Ochrona danych osobowych}
 
 Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne,
 będące pod zarządem jednostek medycznych, u których są zainstalowane mogą
 przetwarzać dane osobowe.
 
-\subsection{Rejestracja przebiegu procesów oraz raportowanie}
+\section{Rejestracja przebiegu procesów oraz raportowanie}
 
 Przebieg wszystkich procesów realizowanych przez węzły lokalne oraz węzeł 
 centralny musi być rejestrowany w sposób umożliwiający: 
 \begin{enumerate}
   \item prowadzenie rozliczeń finansowych pomiędzy zlecającymi i konsultantami,
   \item przeprowadzenie audytu poprawności przebiegu procesów,
-  \item stwierdzenie kto, kiedy i jakie dane modyfikował, a w przypadku dostępu do danych jednostki zewnętrznej, również fakt przeglądania danych medycznych.
+  \item stwierdzenie kto, kiedy i jakie dane modyfikował, a w przypadku dostępu do danych
+  jednostki zewnętrznej, również fakt przeglądania danych medycznych.
 \end{enumerate}
 
+\section{Cechy interfejsu użytkownika}
+
+\begin{enumerate}
+  \item Zasady weryfikacja poprawności danych wprowadzanych do formularzy, o ile
+  nie wyspecyfikowano tego inaczej dla konkretnego pola, są następujące:
+  \begin{enumerate}
+    \item weryfikacja pola odbywa się bezpośrednio po zakończeniu wprowadzania zmian do pola, czyli utracie przez pole skupienia (fokusu)
+    lub inna możliwość: weryfikacja pola odbywa się po utracie skupienia lub po upływie konfigurowalnego czasu od ostatniej zmiany zawartości pola,
+    \item efekty weryfikacji poprawności danego pola są prezentowane bezpośrednio przy polu w sposób nie angażujący użytkownika do wykonania
+    akcji (np. zatwierdzenia komunikatu poprzez kliknięcie),
+    \item efekty weryfikacji powinny być tak prezentowane, aby użytkownik mógł szybko określić, które pola mają
+    nieprawidłową treść (użycie odpowiednich kolorów w celu oznaczenia prawidłowych i nieprawidłowych pól oraz towarzyszących
+    im komunikatów),
+    \item jeśli formularz zawiera pola z nieprawidłowymi danymi, to użytkownik nie może wywołać akcji dla której dostarcza on dane
+  \end{enumerate}
+
+\end{enumerate}
+
+
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
-\section[Podsystem Elektronicznego Zlecania Opisów Badań Medycznych]{Wymagana funkcjonalność Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
+\chapter[Podsystem Elektronicznego Zlecania Opisów Badań]{Wymagana funkcjonalność Podsystemu Elektronicznego Zlecania Opisów Badań Medycznych}
 
-Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecanie między sobą opisów badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węzła centralnego, który dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
+Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecanie między sobą opisów
+badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węzła centralnego, który
+dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający
+treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
 
-\subsection{Wymagania ogólne}
+\section{Wymagania ogólne}
 \begin{enumerate}
 \item Co najmniej 3 poziomy dostępu:
         \begin{enumerate}
         \item technik -- może tworzyć zlecenia, ale nie może ich wysłać,
-        \item lekarz (zleceniodawca) -- uprawnienia technika + możliwość wysyłania zleceń,
+        \item zleceniodawca -- uprawnienia technika powiększone o możliwość wysyłania zleceń,
         \item administrator -- ma możliwość zmiany konfiguracji systemu i ingerencji w dane poza produkcyjnym schematem działania.
         \end{enumerate}
 \item Routingiem zleceń zajmuje się węzeł centralny.
@@ -107,7 +139,7 @@ Zadaniem podsystemu jest umożliwienie użytkownikom węzłów lokalnych zlecani
 \item Węzeł centralny posiada pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach jak i o zleceniach przetworzonych w przeszłości.
 \end{enumerate}
 
-\subsection{Definicja zlecenia}
+\section{Definicja zlecenia}
 
 Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów.
 
@@ -121,11 +153,11 @@ Zlecenie powinno posiadać co najmniej następujące atrybuty:
 \item określenie priorytetu obsługi
 \end{enumerate*}
 
-\subsection{Routing zleceń}
+\section{Routing zleceń}
 
 TODO jak ma działać routing zleceń
 
-\subsection{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
+\section{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
 
 Węzeł lokalny musi mieć możliwość komunikacji z lokalnym systemem PACS w celu:
 \begin{enumerate}
@@ -141,7 +173,7 @@ Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
   \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym
 \end{enumerate}
 
-\subsection{Interfejs użytkownika}
+\section{Interfejs użytkownika}
 
 Wymagany jest webowy interfejs użytkownika do realizacji wszystkich podstawowych funkcji systemu. Możliwe jest zastosowanie również dodatkowych niewebowych interfejsów użytkownika. Każdy z węzłów lokalnych oraz węzeł centralny muszą mieć swoje własne interfejsy użytkownika.
 
@@ -170,13 +202,13 @@ Podstawowe funkcje interfejsu użytkownika:
   \item Wysyłanie zlecenia:
 \end{enumerate}
 
-\subsection{Schemat pracy}
+\section{Schemat pracy}
 \begin{enumerate}
 \item Użytkownik łączy się przeglądarką WWW z lokalnym interfejsem Systemu, loguje się do niego i ma możliwość:
         \begin{enumerate}
         \item przejrzenia stanu aktualnych (będących w trakcie przetwarzania) zleceń,
-        \item modyfikacji aktualnych, niezakończonych zleceń,
         \item przeglądania zleceń archiwalnych,
+        \item modyfikacji aktualnych, niezakończonych zleceń,
         \item stworzenia nowego zlecenia,
         \item wysłania gotowego zlecenia,
         \item realizacji zlecenia (opisania badania).
@@ -190,39 +222,127 @@ Podstawowe funkcje interfejsu użytkownika:
         \end{enumerate}
 \end{enumerate}
 
-\subsection{Konfigurowalność}
+\section{Konfigurowalność}
 
 TODO Co musi być konfigurowalne w systemie zlecania 
 TODO konfigurowalność interfejsu HL7
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
-\section[Podsystem Elektronicznej Wymiany Danych Medycznych]{Wymagana funkcjonalność Podsystemu Elektronicznej Wymiany Danych Medycznych}
+\chapter[Podsystem Elektronicznej Wymiany Danych Medycznych]{Wymagana funkcjonalność Podsystemu Elektronicznej Wymiany Danych Medycznych}
 
-\subsection{Definicje}
+\section{Definicje}
 \begin{description}
 \item[użytkownik] Uprawniony pracownik jednostki medycznej posiadającej węzeł lokalny, który chce pozyskać dane
       medyczne dostępne w innych jednostkach medycznych.
-\item[dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS (zwykle będą to pliki DICOM).
+\item[dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS.
 \item[identyfikator pacjenta] Identyfikator pacjenta używany w LSS. Identyfikator pacjenta zawsze występuje w kontekście
       konkretnego LSS, a bez niego nie ma znaczenia.
-\item[baza informacji o danych medycznych] Baza danych zawierająca informacje o danych medycznych dostępnych poprzez węzły lokalne.
-      Baza zawiera identyfikatory pacjentów oraz odnośniki do powiązanych z tymi identyfikatorami danych medycznych.
-\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS.
+\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS. Istnienie powiązania
+      identyfikatorów jest jednocześnie wskazaniem, na istnienie badań medycznych w różnych węzłach lokalnych dotyczących
+      tego samego pacjenta.
 \end{description}
 
-\subsection{Schemat działania}
+\section{Wymagania ogólne}
 
+
+
+\section{Schematy działania}
+
+Działanie systemu POWINNO|MUSI przebiegać wg. niżej opisanych schematów.
+
+\subsection{Interfejs użytkownika - wyszukiwanie}
 \begin{enumerate}
   \item Użytkownik uwierzytelnia się w systemie i uzyskuje dostęp do interfejsu użytkownika.
+
+    Uwierzytelnienie (logowanie) może odbywać się za pomocą loginu i hasła lub certyfikatu X.509 (PYTANIE, czy
+    zaimplementowane mają być obie metody). Bez uwierzytelnienia się użytkownika nie ma dostępu do
+    żadnych funkcji ani informacji dostępnych w systemie, poza informacją o sposobie skontaktowania
+    się z lokalnym administratorem.
+
+  \item TODO jakie opcje ma użytkownik na głównej stronie do wyboru
   \item Użytkownik wprowadza do węzła lokalnego dane osobowe pacjenta, którego dane medyczne są poszukiwane.
-  \item Węzeł lokalny wysyła zapytanie do węzła centralnego i oczekuje na wyniki.
-  \item Po otrzymaniu wyników, węzeł lokalny prezentuje użytkownikowi listę dostępnych danych medycznych.
-  \item Użytkownik wybiera, które dane medyczne chce przejrzeń, a następnie pozyskuje je bezpośrednio od
-        zdalnego węzła lokalnego, który je udostępnia.
+
+        Wymagane jest aby użytkownik wprowadził 3 dane: imię, nazwisko oraz datę urodzenia lub PESEL.
+        Data musi być wprowadzana w formacie ISO 8601 i poddawana weryfikacji. PESEL również musi być
+        poddawany weryfikacji włącznie ze sprawdzeniem cyfry kontrolnej.
+  
+  \item Użytkownik jednym przyciskiem zatwierdza wprowadzone dane, rozpoczyna procedurę wyszukiwania danych i przenosi
+  się na ekran prezentacji wyników.
+
+        Zbieranie odpowiedzi na zapytanie odbywa się w tle. Uzyskane odpowiedzi są na bieżąco prezentowane na
+        ekranie wyników bez oczekiwania na zakończenie całej procedury wyszukiwania. W trakcie zbierania odpowiedzi
+        interfejs użytkownika nie jest zablokowany i użytkownik może przeglądać wyniki, które na bieżąco się pojawiają.
+        Użytkownik może za pomocą przycisku przerwać procedurę wyszukiwania. Przerwanie procedury wyszukiwania
+        nie wpływa na otrzymane już wyniki, a jedynie zatrzymuje dalsze odpytywanie.
+  
 \end{enumerate}
 
-\subsection{Opis węzła centralnego}
+\subsection{Węzły - wyszukiwanie}
+
+Aby spełnić wymagania funkcjonalne węzły mogą się komunikować np. w poniżej opisany sposób.
+Definicje symboli użytych w opisie:
+\begin{description}
+  \item[\bm{$C$}] Węzeł centralny
+  \item[\bm{$L_S$}] Węzeł szukający danych
+  \item[\bm{$L_N$}] Dowolny, zdalny względem $L_S$, węzeł lokalny o numerze $N$
+  \item[\bm{$P_{SA}ID$}] Identyfikator pacjenta $A$ jakim posługuje się węzeł szukający $L_S$
+  \item[\bm{$P_{NA}ID$}] Identyfikator pacjenta $A$ jakim posługuje się węzeł odpowiadający $L_N$.
+\end{description}
+
+Identyfikator pacjenta składa się z trzech elementów: identyfikatora węzła lokalnego, identyfikatora LSS i identyfikatora
+pacjenta w podanym LSS. Identyfikator pacjenta może być zapisany w postaci URI, a zapytanie HTTP GET na
+ten URI z dodanymi na końcu ustalonymi etykietami powinno dać w wyniku dane osobowe pacjenta lub listę badań.
+  
+Przebieg procesu komunikacji:
+\begin{enumerate}
+  \item Użytkownik wprowadza dane osobowe pacjenta poprzez interfejs użytkownika na $L_S$
+  \item $L_S$, przeszukując podłączone do siebie LSS, tworzy $P_{SA}ID$,
+
+  TODO: co jeśli pacjenta nie ma w PACS'ie? co jeśli $L_S$ jest połączony z więcej niż jednym LSS
+  
+  \item $L_S$ wysyła zapytanie o $P_{SA}ID$ do $C$
+  \item $C$ przeszukuje swoją bazę informacji powiązań identyfikatorów i w odpowiedzi wysyła
+    \begin{enumerate}
+      \item listę $P_{NA}ID$ jeśli jakieś powiązania zostały odnalezione, oraz
+      \item listę $L_N$, które $L_S$ powinno odpytać, ponieważ nie wiadomo, czy nie pojawiły się tam dane pacjenta
+    \end{enumerate}
+  \item Jeśli $C$ odpowiedziało listą $L_N$ do odpytania, to $L_S$ odpytuje je równolegle o listę $P_{NA}ID$,
+  podając w zapytaniu dane osobowe pacjenta oraz $P_{SA}ID$.
+  \item Za każdym razem kiedy $L_S$ otrzymuje nowe $P_{NA}ID$ odpytuje powiązane z nim $L_N$ o dostępne dane medyczne i bezpośrednio
+  po otrzymaniu odpowiedzi prezentuje je użytkownikowi.
+  \item Za każdym razem kiedy odpytane $L_N$ znajdzie u siebie pacjenta o odpowiednich danych osobowych, to wysyła do $C$ powiadomienie
+  o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
+  \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
+
+TODO: inwalidacja bazy powiązań identyfikatorów
+
+TODO: 3 typy alertów przy niezgodności danych pacjenta
+
+\end{enumerate}
+
+
+
+\section{Opis interfejsu użytkownika}
+
+
+\subsection{Interfejs administracyjny węzła lokalnego}
+
+Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
+\begin{enumerate}
+  \item Zarządzanie użytkownikami
+        Administrator musi mieć możliwość:
+        \begin{enumerate}
+          \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
+          żadnych swoich ustawień, ale nie może zalogować się do systemu
+          
+        \end{enumerate}
+
+  
+\end{enumerate}
+
+
+\section{Opis węzła centralnego}
 Zadania węzła centralnego:
 \begin{enumerate}
 \item utrzymanie bazy informacji o danych medycznych,
@@ -232,7 +352,7 @@ Zadania węzła centralnego:
 \item przyjmowanie od węzłów lokalnych informacji o powiązaniach identyfikatorów pacjentów,
 \end{enumerate}
 
-\subsection{Opis węzła lokalnego}
+\section{Opis węzła lokalnego}
 Zadania węzła lokalnego:
 \begin{enumerate}
 \item Udostępnianie interfejsu użytkownika niezbędnego do prowadzania danych osobowych pacjentów
@@ -241,7 +361,16 @@ Zadania węzła lokalnego:
 \item Informowanie węzła centralnego o odkrytych powiązaniach między identyfikatorami pacjentów
 \item Udostępnianie danych medycznych uprawnionym zdalnym węzłom lokalnym
 
-% tutaj skończyłem - seweryn
+\section{Konfigurowalność}
+
+\begin{itemize}
+  \item mapowanie zapytania o pacjenta na DICOM
+  \item mapowanie odpowiedzi z LSS na ustalony XML obowiązujący w Systemie
+  \item możliwość określenia zestawu zapytań wysyłanych do LSS (o jakie atrybuty i w jakiej kolejności
+  pytamy przy szukaniu pacjenta w LSS)
+\end{itemize}
+
+% tutaj skończyłem - Seweryn
 
 \item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
   \begin{enumerate}
