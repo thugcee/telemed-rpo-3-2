@@ -31,6 +31,7 @@ Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów 
 \item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny posiada informacje o węzłach lokalnych i ma stałą łączność z nimi
 \item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z LSS
 \item[LSS] lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7
+\item[interfejs webowy] interfejs użytkownika dostępny zdalnie za pomocą przeglądarki WWW.
 \end{description}
 
 \section{Architektura fizyczna}
@@ -39,34 +40,27 @@ Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów 
 System działa na szeregu węzłów połączonych w topologii częściowej siatki. Rozróżnia się 2 rodzaje węzłów: centralny i lokalny. W sieci, zwanej konfederacją, występuje jeden węzeł centralny i wiele węzłów lokalnych. 
 
 \subsection{Węzeł centralny}
-Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych działających na 4 serwerach fizycznych i na tych zasobach sprzętowych musi zapewniać taką 
-niezawodność, że awaria jednego serwera fizycznego nie powoduje utraty funkcjonalności Systemu. Obsługa
-awarii pojedynczego serwera musi być tak zrealizowana, że przerwa w działaniu węzła centralnego nie będzie dłuższa niż 10 sekund.
+Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub maksymalnie 6 serwerów zwirtualizowanych działających na 4 serwerach fizycznych i na tych zasobach sprzętowych musi zapewniać taką niezawodność, że awaria jednego serwera fizycznego nie powoduje utraty funkcjonalności Systemu. Obsługa awarii pojedynczego serwera musi być tak zrealizowana, że przerwa w działaniu węzła centralnego nie będzie dłuższa niż 5 minut.
 
-Węzeł centralny ma łączność z Internetem i jest widoczny pod publicznym adresem IP. Węzeł centralny poprzez Internet komunikuje się ze wszystkimi węzłami lokalnymi.
+Węzeł centralny ma łączność z Internetem i jest widoczny pod publicznym adresem IP. Węzeł centralny poprzez Internet komunikuje się ze wszystkimi węzłami lokalnymi. Zarządzanie węzłem centralnym odbywa się poprzez niezależny od pozostałych węzłów interfejs webowy.
 
 \subsection{Węzeł lokalny}
 Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej i ma łączność z LSS oraz z Internetem. Na styku z Internetem jest widoczny pod publicznym adresem IP. Każdy węzeł lokalny poprzez Internet komunikuje się z węzłem centralnym i wybranymi węzłami lokalnymi.  
 
-%% --------------- Akapit testowy --------------
-Testowe odwołanie do sekcji \ref{sec:arch_fiz}. Odwoływać się można do różnych elementów. Np. do rysunków, tabel itp. Jest też możliwość odwołania się do numeru strony, na której obiekt się znajduje. Uwaga dla początkujących: czasem trzeba dokument wyrenderować 2 razy aby w pełni zaktualizowały się odnośniki i wszelkiego rodzaju spisy (np. spis treści).
-\footnote{Jeśli renderujemy do PDF'a, to referencje mogą być linkami. Kliknięcie w link będzie powodowało przewinięcie dokumentu do linkowanego obiektu}
-%%-----------------------------------------------
-
 \section{Bezpieczeństwo sieciowe}
 Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
 \begin{enumerate}
-\item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, remote API itp) muszą posiadać zabezpieczenia
+\item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, zdalne API itp.) muszą posiadać zabezpieczenia
 pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania;
 komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
 \item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego
-dany interfejs.
+dany interfejs; zapora ogniowa udostępnia interfejsy zewnętrzne tylko niezbędnym klientom.
 \end{enumerate}
 
 \section{Konfigurowalność}
 
 \begin{enumerate}
-  \item Możliwość zdefiniowania wyglądu użytkownika za pomocą CSS (Cascading Style Sheets).
+  \item Możliwość zdefiniowania wyglądu interfejsu użytkownika za pomocą CSS (Cascading Style Sheets).
 
   Wszystkie pliki \emph{css} muszą znajdować się w specjalnie do tego przeznaczonym katalogu (i ewentualnie
   jego podkatalogach) oraz być dostępne dla administratora węzła do modyfikacji. Z nazw plików musi wynikać
@@ -81,9 +75,7 @@ dany interfejs.
 
 \section{Ochrona danych osobowych}
 
-Węzeł centralny nie gromadzi danych osobowych ani danych wrażliwych. Węzły lokalne,
-będące pod zarządem jednostek medycznych, u których są zainstalowane mogą
-przetwarzać dane osobowe.
+Węzeł centralny nie gromadzi i nie przetwarza danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych, u których są zainstalowane mogą przetwarzać dane osobowe.
 
 \section{Rejestracja przebiegu procesów oraz raportowanie}
 
@@ -94,6 +86,7 @@ centralny musi być rejestrowany w sposób umożliwiający:
   \item przeprowadzenie audytu poprawności przebiegu procesów,
   \item stwierdzenie kto, kiedy i jakie dane modyfikował, a w przypadku dostępu do danych
   jednostki zewnętrznej, również fakt przeglądania danych medycznych.
+  \item eksport zebranych danych do uniwersalnych formatów takich jak: CSV i XML.
 \end{enumerate}
 
 \section{Cechy interfejsu użytkownika}
@@ -141,21 +134,75 @@ treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane
 
 \section{Definicja zlecenia}
 
-Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów.
+Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów jak i samego zlecenia.
 
 Zlecenie powinno posiadać co najmniej następujące atrybuty:
 \begin{enumerate*}
 \item globalnie unikatowy numer zlecenia
-\item zanonimizowane dane o pacjencie, takie jak wiek, czy płeć
-\item treść definiująca co ma być opisane
-\item określenie odbiorcy zlecenia
-\item określenie usługi do której zlecenie jest kierowane
-\item określenie priorytetu obsługi
+\item dane identyfikujące zleceniodawcę
+\item dane kontaktowe zleceniodawcy
+\item data wykonania badania
+\item lista załączników 
+\item zanonimizowane dane o pacjencie, takie jak wiek, płeć
+\item treść definiującą co ma być opisane
+\item określenie listy odbiorców zlecenia
+\item określenie nazwy usługi do której zlecenie jest kierowane
+\item określenie typu badania
+\item określenie modalności
+\item określenie czasu na wykonanie opisu badania (z dokładnością do co najmniej 1 minuty)
 \end{enumerate*}
 
-\section{Routing zleceń}
+\section{Przetwarzanie zleceń}
 
-TODO jak ma działać routing zleceń
+Funkcje silnika przetwarzania zleceń:
+\begin{enumerate}
+  \item dbanie aby zlecenia były niezawodnie dostarczane do właściwych konsultantów,
+  \item dbanie aby dane zlecenie mogło być w jednym momencie opisywane tylko przez jednego konsultanta,
+  \item taki dobór strategii wysyłania badań, aby zlecenie mogło być opisane w możliwie najkrótszym czasie (np. poprzez natychmiastowe rozpoczęcie wysyłania danych obrazowych do wybranego konsultanta, wysłanie danych obrazowych do innego konsultanta, jeśli wcześniejszy długo nie podejmuje opisu badania),
+  \item item dbanie aby zlecenia o krótkim czasie na wykonanie opisu, miały wyższy priorytet przy wysyłaniu danych obrazowych do konsultanta,
+  \item po stronie zleceniodawcy:
+  \begin{enumerate}
+    \item przygotowanie kompletu danych zlecenia,
+    \item wybór listy konsultantów na podstawie konfiguracji węzła i danych wprowadzonych przez użytkownika zlecającego,
+    \item wysyłanie wg. zadanej strategii zleceń do poszczególnych konsultantów ,
+    \item pozyskanie opisu badania od konsultanta,
+    \item monitorowanie przebiegu procesu wysyłania zlecenia i prezentacja wyników dla zleceniodawcy poprzez interfejs użytkownika, 
+    \item monitorowanie stanu wysłanego zlecenia i jego prezentacja dla zleceniodawcy poprzez interfejs użytkownika,
+  \end{enumerate}
+  \item po stronie konsultanta:
+  \begin{enumerate}
+    \item przyjmowanie zleceń opisów badań obrazowych,
+    \item monitorowanie przebiegu procesu odbierania zlecenia i prezentacja wyników dla konsultanta poprzez interfejs użytkownika
+    \item prezentacja kolejki zleceń czekających na opis, 
+    \item przekazanie danych obrazowych związanych ze zleceniem do LSS,
+    \item informowanie zainteresowanych węzłów o podjęciu realizacji zlecenia,
+  \end{enumerate}
+\end{enumerate}
+
+Silnik musi przewidywać obsługę następujących scenariuszy:
+\begin{enumerate}
+  \item Badanie jest prezentowane konsultantowi lub konsultantom już w momencie rozpoczęcia transferu. Prezentacja badania na liście obejmuje:
+  \begin{enumerate}
+    \item Bieżący stan transferu w postaci ilości serii/łączna liczba serii i ilości obrazków w każdej serii.
+    \item Meta dane zlecenia (Imię, Nazwisko, Pesel/Data urodzenia, modalność, kod badania, data i godzina badania, czas do którego należy dokonać opisu, uwagi do badania).
+  \end{enumerate}
+
+  \item W zależności od konfiguracji, badania mogą być prezentowane jednocześnie na listach wszystkich wybranych konsultantów, lub po kolei, tak jak odbywa się transfer danych obrazowych. W pierwszej sytuacji otwarcie badania oznacza jednocześnie rozpoczęcie jego transferu o ile nie był on otwarty przez inny węzeł.
+3. Badanie może być otwarte w dowolnym momencie transferu.
+4. W momencie otwarcie badania, nie może być ono otwarte na innym węźle.
+5. Jeżeli czas na opisanie badania zostanie przekroczone, badanie jest oznaczane jako przeterminowane.
+6. Jeden opisujący może otworzyć w danym czasie tylko jedno badanie.
+7. Opisujący badanie może przedłużyć czas opisu poprzez reakcję z systemem. Czas oczekiwania systemu na reakcję jest konfigurowalny.
+8. Obsługa badania przeterminowanego polega na jego cofnięciu do puli badań do opisu.
+9. Centrum gromadzi informację o stanie węzłów lokalnych.
+10. Routing badań jest wykonywany w oparciu o następujące parametry:
+a. Stany dostępności węzła.
+b. Przepływność łącza.
+c. Czasy obsługi zleceń.
+d. Preferencji zlecającego.
+11. Statystyki z list i opisów powinny być zachowywane i archiwizowane.
+\end{enumerate}
+
 
 \section{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
 
