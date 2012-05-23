@@ -146,11 +146,13 @@ Zlecenie powinno posiadać co najmniej następujące atrybuty:
 \item zanonimizowane dane o pacjencie, takie jak wiek, płeć
 \item treść definiującą co ma być opisane
 \item określenie listy odbiorców zlecenia
-\item określenie nazwy usługi do której zlecenie jest kierowane
+\item określenie nazwy usługi (pakietu usług) do której zlecenie jest kierowane
 \item określenie typu badania
 \item określenie modalności
 \item określenie czasu na wykonanie opisu badania (z dokładnością do co najmniej 1 minuty)
 \end{enumerate*}
+
+TODO (rozwinąć): Pakiet usług jest definiowany na węźle lokalnym zleceniodawcy. Pakiet usług predefiniuje listę konsultantów.
 
 \section{Przetwarzanie zleceń}
 
@@ -181,13 +183,17 @@ Funkcje silnika przetwarzania zleceń:
 
 Silnik musi przewidywać obsługę następujących scenariuszy:
 \begin{enumerate}
+  \item Transfer plików związanych ze zleceniem następuje:
+	\begin{enumerate} 
+		\item bezpośrednio po zdefiniowaniu zlecenia jeśli nie są aktualnie transferowane inne zlecenia
+		\item 
   \item Badanie jest prezentowane konsultantowi lub konsultantom już w momencie rozpoczęcia transferu. Prezentacja badania na liście obejmuje:
-  \begin{enumerate}
-    \item Bieżący stan transferu w postaci ilości serii/łączna liczba serii i ilości obrazków w każdej serii.
+  \begin{enumerate} TODO przenieść do opisu interfejsu
+    \item Bieżący stan transferu w postaci ilości serii/łączna liczba serii i ilości obrazów w każdej serii.
     \item Meta dane zlecenia (Imię, Nazwisko, Pesel/Data urodzenia, modalność, kod badania, data i godzina badania, czas do którego należy dokonać opisu, uwagi do badania).
   \end{enumerate}
 
-  \item W zależności od konfiguracji, badania mogą być prezentowane jednocześnie na listach wszystkich wybranych konsultantów, lub po kolei, tak jak odbywa się transfer danych obrazowych. W pierwszej sytuacji otwarcie badania oznacza jednocześnie rozpoczęcie jego transferu o ile nie był on otwarty przez inny węzeł.
+  \item W zależności od konfiguracji węzła zlecającego, badania mogą być prezentowane jednocześnie na listach wszystkich wybranych konsultantów, lub po kolei, tak jak odbywa się transfer danych obrazowych. W pierwszej sytuacji otwarcie badania oznacza jednocześnie rozpoczęcie jego transferu o ile nie był on otwarty przez inny węzeł.
 3. Badanie może być otwarte w dowolnym momencie transferu.
 4. W momencie otwarcie badania, nie może być ono otwarte na innym węźle.
 5. Jeżeli czas na opisanie badania zostanie przekroczone, badanie jest oznaczane jako przeterminowane.
@@ -196,11 +202,13 @@ Silnik musi przewidywać obsługę następujących scenariuszy:
 8. Obsługa badania przeterminowanego polega na jego cofnięciu do puli badań do opisu.
 9. Centrum gromadzi informację o stanie węzłów lokalnych.
 10. Routing badań jest wykonywany w oparciu o następujące parametry:
-a. Stany dostępności węzła.
-b. Przepływność łącza.
-c. Czasy obsługi zleceń.
-d. Preferencji zlecającego.
-11. Statystyki z list i opisów powinny być zachowywane i archiwizowane.
+		\begin{enumerate}
+		\item dostępności węzła - czy węzeł docelowy jest dostępny, czy nie (dostępność jest badana w sposób aktywny za pomocą zapytań HTTP)
+		\item czasy obsługi zleceń.
+		\item preferencji zlecającego.
+		\item statystyki z list i opisów powinny być zachowywane i archiwizowane.
+		\end{enumerate}
+
 \end{enumerate}
 
 
@@ -229,13 +237,13 @@ Wymagania dla webowego interfejsu użytkownika:
 \begin{enumerate}
     \item neutralność technologiczna zapewniona poprzez:
 	  \begin{enumerate}
-	  \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji wieloplatformowych przeglądarek WWW Mozilla Firefox oraz Google Chrome
+	  \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome
 	  \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
 	  \end{enumerate}
     \item sprawność działania zapewniona poprzez:
 	  \begin{enumerate}
 	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
-	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać [określić, co to znaczy sprawnie działać] w przeglądarce uruchomionej na komputerze z procesorem o wydajności KKK i 360 MB pamięci RAM dostępnej dla przeglądarki
+	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać [określić, co to znaczy sprawnie działać] w przeglądarce uruchomionej na komputerze z procesorem o wydajności ??? i 360 MB pamięci RAM dostępnej dla przeglądarki
 	  \end{enumerate}
 \end{enumerate}
 
@@ -246,7 +254,7 @@ Podstawowe funkcje interfejsu użytkownika:
       \item przy tworzeniu zlecenia użytkownik musi mieć możliwość dostarczenia kompletnej definicji zlecenia (patrz opis treści zlecenia)
       \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
       \end{enumerate}
-  \item Wysyłanie zlecenia:
+  \item Wysyłanie zlecenia: TODO wybranie preferowanego konsultanta
 \end{enumerate}
 
 \section{Schemat pracy}
@@ -272,6 +280,13 @@ Podstawowe funkcje interfejsu użytkownika:
 \section{Konfigurowalność}
 
 TODO Co musi być konfigurowalne w systemie zlecania 
+- definicje pakietów usług
+	- lista konsultantów
+	- obsługiwane kody badania
+	- czas na zrealizowanie zlecenia
+	- czy zleceniodawca może wybrać preferowanego konsultanta ???
+	- czy zlecenie ma się pojawić u wszystkich konsultanów 
+- mapowanie tagów DICOM na kody badania
 TODO konfigurowalność interfejsu HL7
 
 %--------------------------------------------------------------------------------------------
@@ -296,18 +311,17 @@ TODO konfigurowalność interfejsu HL7
 
 \section{Schematy działania}
 
-Działanie systemu POWINNO|MUSI przebiegać wg. niżej opisanych schematów.
+Działanie systemu MUSI uwzględniać obsługę niżej opisanych schematów dziłania.
 
 \subsection{Interfejs użytkownika - wyszukiwanie}
 \begin{enumerate}
   \item Użytkownik uwierzytelnia się w systemie i uzyskuje dostęp do interfejsu użytkownika.
 
-    Uwierzytelnienie (logowanie) może odbywać się za pomocą loginu i hasła lub certyfikatu X.509 (PYTANIE, czy
+    Uwierzytelnienie (logowanie) może odbywać się za pomocą loginu i hasła lub certyfikatu X.509 (
     zaimplementowane mają być obie metody). Bez uwierzytelnienia się użytkownika nie ma dostępu do
     żadnych funkcji ani informacji dostępnych w systemie, poza informacją o sposobie skontaktowania
     się z lokalnym administratorem.
 
-  \item TODO jakie opcje ma użytkownik na głównej stronie do wyboru
   \item Użytkownik wprowadza do węzła lokalnego dane osobowe pacjenta, którego dane medyczne są poszukiwane.
 
         Wymagane jest aby użytkownik wprowadził 3 dane: imię, nazwisko oraz datę urodzenia lub PESEL.
@@ -346,7 +360,7 @@ Przebieg procesu komunikacji:
   \item Użytkownik wprowadza dane osobowe pacjenta poprzez interfejs użytkownika na $L_S$
   \item $L_S$, przeszukując podłączone do siebie LSS, tworzy $P_{SA}ID$,
 
-  TODO: co jeśli pacjenta nie ma w PACS'ie? co jeśli $L_S$ jest połączony z więcej niż jednym LSS
+  TODO: co jeśli pacjenta nie ma w PACS'ie? co jeśli $L_S$ jest połączony z więcej niż jednym LSS - węzeł lokalny swój własny id pacjenta i wiąże go z LSS_ID 
   
   \item $L_S$ wysyła zapytanie o $P_{SA}ID$ do $C$
   \item $C$ przeszukuje swoją bazę informacji powiązań identyfikatorów i w odpowiedzi wysyła
@@ -362,7 +376,7 @@ Przebieg procesu komunikacji:
   o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
   \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
 
-TODO: inwalidacja bazy powiązań identyfikatorów
+TODO: inwalidacja bazy powiązań identyfikatorów 
 
 TODO: 3 typy alertów przy niezgodności danych pacjenta
 
@@ -382,7 +396,7 @@ Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czyn
         \begin{enumerate}
           \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
           żadnych swoich ustawień, ale nie może zalogować się do systemu
-          
+          \item TODO reakcja na alerty
         \end{enumerate}
 
   
