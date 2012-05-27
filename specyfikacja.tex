@@ -21,13 +21,9 @@
 
 Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów działających na tej samej platformie sprzętowej i programowej: Podsystem Elektronicznego Zlecania Opisów Badań Medycznych (zwany danej Systemem Zlecania) oraz Podsystem Elektronicznej Wymiany Danych Medycznych (zwany dalej Bazą Metadanych).
 
-\section{Definicje}
-
+Słownik określeń wspólnych dla obu systemów:
 \begin{description}
 \item[System] centralny system telemedyczny, będący przedmiotem tej specyfikacji
-\item[Zleceniodawca] użytkownik węzła lokalnego zlecający do systemu wykonanie opisu badania
-\item[Konsultant] użytkownik węzła lokalnego realizujący zlecenie opisu badania, które pojawiło się na jego węźle
-\item[Zlecenie] zlecenie opisu badania medycznego
 \item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny posiada informacje o węzłach lokalnych i ma stałą łączność z nimi
 \item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z LSS
 \item[LSS] lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7
@@ -45,32 +41,20 @@ Węzeł centralny może składać się z maksymalnie 4 serwerów fizycznych lub 
 Węzeł centralny ma łączność z Internetem i jest widoczny pod publicznym adresem IP. Węzeł centralny poprzez Internet komunikuje się ze wszystkimi węzłami lokalnymi. Zarządzanie węzłem centralnym odbywa się poprzez niezależny od pozostałych węzłów interfejs webowy.
 
 \subsection{Węzeł lokalny}
-Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej i ma łączność z LSS oraz z Internetem. Na styku z Internetem jest widoczny pod publicznym adresem IP. Każdy węzeł lokalny poprzez Internet komunikuje się z węzłem centralnym i wybranymi węzłami lokalnymi.  
+Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizycznym lub zwirtualizowanym z zainstalowanym systemem operacyjnym Debian GNU/Linux w wersji 6.0 lub nowszej i ma łączność z LSS oraz z Internetem. Na styku z Internetem jest widoczny pod publicznym adresem IP. Każdy węzeł lokalny poprzez Internet komunikuje się z węzłem centralnym i wybranymi węzłami lokalnymi.
 
-\section{Bezpieczeństwo sieciowe}
-Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
+\section{Bezpieczeństwo}
 \begin{enumerate}
-\item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, zdalne API itp.) muszą posiadać zabezpieczenia
-pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania;
-komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
-\item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego
-dany interfejs; zapora ogniowa udostępnia interfejsy zewnętrzne tylko niezbędnym klientom.
-\end{enumerate}
-
-\section{Konfigurowalność}
-
-\begin{enumerate}
-  \item Możliwość zdefiniowania wyglądu interfejsu użytkownika za pomocą CSS (Cascading Style Sheets).
-
-  Wszystkie pliki \emph{css} muszą znajdować się w specjalnie do tego przeznaczonym katalogu (i ewentualnie
-  jego podkatalogach) oraz być dostępne dla administratora węzła do modyfikacji. Z nazw plików musi wynikać
-  ich przeznaczenie. Używane nazwy klas i identyfikatory obiektów muszą być w miarę możliwości czytelne
-  dla człowieka.
-
-  \item Możliwość określenia bogato sformatowanej treści, która pojawia się jako pierwszy ekran systemu
-  i zawiera formularz logowania do systemu lub w przypadku uwierzytelniania za pomocą certyfikatów X.509,
-  przycisk wejścia do systemu.
-
+ \item Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
+    \begin{enumerate}
+    \item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, zdalne API itp.) muszą posiadać zabezpieczenia
+    pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania;
+    komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
+    \item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego
+    dany interfejs; zapora ogniowa udostępnia interfejsy zewnętrzne tylko niezbędnym klientom/użytkownikom.
+    \end{enumerate}
+ \item Oba podsystemy korzystają ze wspólnej bazy użytkowników, tak aby użytkownik uwierzytelniając się za pomocą tych samych danych mógł korzystać z obu podsystemów, jeśli ma to tego uprawnienia.
+ \item Jeden profil użytkownika zawiera atrybuty specyficzne dla jednego jak i drugiego podsystemu.
 \end{enumerate}
 
 \section{Ochrona danych osobowych}
@@ -105,6 +89,17 @@ centralny musi być rejestrowany w sposób umożliwiający:
     \item jeśli formularz zawiera pola z nieprawidłowymi danymi, to użytkownik nie może wywołać akcji dla której dostarcza on dane
   \end{enumerate}
 
+  \item Możliwość zdefiniowania wyglądu interfejsu użytkownika za pomocą CSS (Cascading Style Sheets).
+
+  Wszystkie pliki \emph{css} muszą znajdować się w specjalnie do tego przeznaczonym katalogu (i ewentualnie
+  jego podkatalogach) oraz być dostępne dla administratora węzła do modyfikacji. Z nazw plików musi wynikać
+  ich przeznaczenie. Używane nazwy klas i identyfikatory obiektów muszą być w miarę możliwości czytelne
+  dla człowieka. Dokumentacja do Systemu musi opisywać, które klasy i identyfikatory do czego służą.
+
+  \item Możliwość określenia bogato sformatowanej treści, która pojawia się jako pierwszy ekran systemu
+  i zawiera formularz logowania do systemu lub w przypadku uwierzytelniania za pomocą certyfikatów X.509,
+  przycisk wejścia do systemu.
+
 \end{enumerate}
 
 
@@ -117,115 +112,92 @@ badań medycznych oraz odbiór gotowych opisów. Zlecenia wysyłane są do węz�
 dystrybuuje je do węzłów lokalnych konsultantów. Zlecenie stanowi pakiet danych zawierający
 treść zlecenia oraz pliki będące wynikiem badania, które ma zostać opisane. 
 
-\section{Wymagania ogólne}
-\begin{enumerate}
-\item Co najmniej 3 poziomy dostępu:
-        \begin{enumerate}
-        \item technik -- może tworzyć zlecenia, ale nie może ich wysłać,
-        \item zleceniodawca -- uprawnienia technika powiększone o możliwość wysyłania zleceń,
-        \item administrator -- ma możliwość zmiany konfiguracji systemu i ingerencji w dane poza produkcyjnym schematem działania.
-        \end{enumerate}
-\item Routingiem zleceń zajmuje się węzeł centralny.
-\item Na węźle centralnym nie pojawiają się dane wrażliwe i osobowe.
-\item W celu wymiany danych wrażliwych węzły lokalne komunikują się bezpośrednio między sobą.
-\item Komunikaty sygnalizacyjne przechodzą przez węzeł centralny.
-\item Węzeł centralny posiada pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach jak i o zleceniach przetworzonych w przeszłości.
-\end{enumerate}
+Słownik określeń specyficznych dla Systemu Zlecenia
+\begin{description}
+  \item[Zleceniodawca] Użytkownik węzła lokalnego zlecający do systemu wykonanie opisu badania.
+  \item[Konsultant] Użytkownik węzła lokalnego realizujący zlecenie opisu badania, które pojawiło się na jego węźle.
+  \item[Zlecenie] Zlecenie opisu badania medycznego.
+\end{description}
 
 \section{Definicja zlecenia}
 
-Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów (również elektronicznych). Załączone dokumenty muszą być identyfikowane w sposób jednoznaczny. Musi istnieć również mechanizm pozwalający na zlokalizowanie dokumentu na podstawie jego identyfikatora lub identyfikatora w połączeniu ze zleceniem. Zamawiający zaleca stosowanie URI do identyfikacji załączonych dokumentów jak i samego zlecenia.
+Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezbędnymi atrybutami oraz listę załączonych dokumentów elektronicznych. Zlecenie i załączone dokumenty muszą być identyfikowane w sposób jednoznaczny w skali globalnej (w Internecie). Musi istnieć również mechanizm pozwalający dowolnemu węzłowi na samodzielne zlokalizowanie dokumentu na podstawie jego identyfikatora i pobieranie go, jeśli węzeł jest do tego uprawniony. Zamawiający zaleca stosowanie URI do identyfikacji zlecenia i załączonych dokumentów.
 
 Zlecenie powinno posiadać co najmniej następujące atrybuty:
 \begin{enumerate*}
-\item globalnie unikatowy numer zlecenia
+\item globalnie unikatowy identyfikator zlecenia
 \item dane identyfikujące zleceniodawcę
 \item dane kontaktowe zleceniodawcy
-\item data wykonania badania
-\item lista załączników 
+\item datę wykonania badania
+\item listę załączników 
 \item zanonimizowane dane o pacjencie, takie jak wiek, płeć
 \item treść definiującą co ma być opisane
-\item określenie listy odbiorców zlecenia
+\item określenie uporządkowanej listy odbiorców zlecenia
 \item określenie nazwy usługi (pakietu usług) do której zlecenie jest kierowane
 \item określenie typu badania
 \item określenie modalności
 \item określenie czasu na wykonanie opisu badania (z dokładnością do co najmniej 1 minuty)
+\item określenie schematu powiadamiania węzłów konsultantów o zgłoszonym zleceniu 
+\item określenie ilości i długości możliwych przedłużeń czasu na wykonanie badania
 \end{enumerate*}
 
-TODO (rozwinąć): Pakiet usług jest definiowany na węźle lokalnym zleceniodawcy. Pakiet usług predefiniuje listę konsultantów.
+Pakiet usług jest definiowany na węźle lokalnym zleceniodawcy. Pakiet usług predefiniuje listę konsultantów i wybrane atrybuty zlecenia. Patrz \ref{zlecenia-konfig}
+
+Wymagana jest implementacja co najmniej 2 schematów powiadamiania węzłów konsultantów o zgłoszonym zleceniu:
+\begin{enumerate}
+ \item pojedynczo -- węzły konsultantów powiadamiane są pojedynczo w kolejności określonej w zleceniu,
+ \item wszyscy -- powiadamiane są jednocześnie wszystkie węzły konsultantów określone w zleceniu.
+\end{enumerate}
+
+\section{Wymagania ogólne}
+\begin{enumerate}
+\item Powiadamianiem węzłów konsultantów o zgłoszonych zleceniach zajmuje się węzeł centralny.
+\item Na węźle centralnym nie pojawiają się dane wrażliwe i osobowe.
+\item W celu wymiany danych wrażliwych węzły lokalne komunikują się bezpośrednio między sobą.
+\item Komunikaty sygnalizacyjne informujące o przebiegu obsługi zlecenia przechodzą przez węzeł centralny.
+\item Węzeł centralny gromadzi pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach jak i o zleceniach przetworzonych w przeszłości.
+\item Dostęp do definicji zlecenia i załączonych do niego dokumentów mają tylko węzły konsultantów określone przez zleceniodawcę. Dostęp ten odbywa się w sposób i w kolejności określonej przez zleceniodawcę.
+\end{enumerate}
 
 \section{Przetwarzanie zleceń}
 
+Elementy silnika przetwarzania zleceń znajdują się na wszystkich węzłach.
+
 Funkcje silnika przetwarzania zleceń:
 \begin{enumerate}
-  \item dbanie aby zlecenia były niezawodnie dostarczane do właściwych konsultantów,
+  \item niezawodne dostarczanie zleceń do właściwych konsultantów,
+  \item dbanie aby do zleceń miały dostęp tylko uprawnione osoby,
+  \item transferowanie do węzłów konsultantów dokumentów załączonych do zlecenia w sposób zoptymalizowany pod kątem jak najszybszego uzyskania opisu badania,
   \item dbanie aby dane zlecenie mogło być w jednym momencie opisywane tylko przez jednego konsultanta,
-  \item taki dobór strategii wysyłania badań, aby zlecenie mogło być opisane w możliwie najkrótszym czasie (np. poprzez natychmiastowe rozpoczęcie wysyłania danych obrazowych do wybranego konsultanta, wysłanie danych obrazowych do innego konsultanta, jeśli wcześniejszy długo nie podejmuje opisu badania),
-  \item item dbanie aby zlecenia o krótkim czasie na wykonanie opisu, miały wyższy priorytet przy wysyłaniu danych obrazowych do konsultanta,
+  \item dbanie aby zlecenia o krótkim czasie na wykonanie opisu, miały przy transferowaniu wyższy priorytet niż zlecenia o długim czasie na wykonanie opisu,
+  \item reagowanie na przekroczenie przez konsultanta czasu na wykonanie opisu badania poprzez umożliwienie wykonania opisu badania kolejnemu konsultantowi,
+  \item umożliwienie konsultantowi, który przekroczył czas na wykonanie opisu badania, dokonania przedłużenia czasu (ilość i długość możliwych przedłużeń jest definiowana w zleceniu),
+  \item umożliwienie konsultantowi podjęcie opisywania zlecenia przed całkowitym zakończeniem transferu zlecenia,
+  \item umożliwienie konsultantowi dostęp (również w LSS) do przesłanych dokumentów zlecenia, nim cały komplet dokumentów zostanie przesłany,
   \item po stronie zleceniodawcy:
   \begin{enumerate}
-    \item przygotowanie kompletu danych zlecenia,
-    \item wybór listy konsultantów na podstawie konfiguracji węzła i danych wprowadzonych przez użytkownika zlecającego,
-    \item wysyłanie wg. zadanej strategii zleceń do poszczególnych konsultantów ,
-    \item pozyskanie opisu badania od konsultanta,
-    \item monitorowanie przebiegu procesu wysyłania zlecenia i prezentacja wyników dla zleceniodawcy poprzez interfejs użytkownika, 
-    \item monitorowanie stanu wysłanego zlecenia i jego prezentacja dla zleceniodawcy poprzez interfejs użytkownika,
+    \item ogłaszanie utworzenia zlecenia, 
+    \item udostępnianie zleceń wraz z załącznikami dla węzłów konsultantów,
+    \item pozyskiwanie gotowych opisów badań od konsultantów,
+    \item monitorowanie przebiegu procesu wysyłania zlecenia w celu prezentacji wyników poprzez interfejs użytkownika, 
+    \item monitorowanie stanu zlecenia w celu jego prezentacji poprzez interfejs użytkownika,
   \end{enumerate}
   \item po stronie konsultanta:
   \begin{enumerate}
-    \item przyjmowanie zleceń opisów badań obrazowych,
-    \item monitorowanie przebiegu procesu odbierania zlecenia i prezentacja wyników dla konsultanta poprzez interfejs użytkownika
-    \item prezentacja kolejki zleceń czekających na opis, 
-    \item przekazanie danych obrazowych związanych ze zleceniem do LSS,
-    \item informowanie zainteresowanych węzłów o podjęciu realizacji zlecenia,
+    \item przyjmowanie zleceń,
+    \item monitorowanie przebiegu procesu odbierania zlecenia w celu prezentacji wyników poprzez interfejs użytkownika,
+    \item przekazanie danych związanych ze zleceniem do LSS,
+    \item informowanie zainteresowanych węzłów o przebiegu realizacji zlecenia,
+    \item udostępnienie gotowego opisu badania dla zleceniodawcy.
   \end{enumerate}
 \end{enumerate}
 
-Silnik musi przewidywać obsługę następujących scenariuszy:
+Optymalizacja transferu zleceń pod kątem jak najszybszego uzyskania opisu badania powinna być realizowana poprzez realizację następujących zasad:
 \begin{enumerate}
-  \item Transfer plików związanych ze zleceniem następuje:
-	\begin{enumerate} 
-		\item bezpośrednio po zdefiniowaniu zlecenia jeśli nie są aktualnie transferowane inne zlecenia
-		\item 
-  \item Badanie jest prezentowane konsultantowi lub konsultantom już w momencie rozpoczęcia transferu. Prezentacja badania na liście obejmuje:
-  \begin{enumerate} TODO przenieść do opisu interfejsu
-    \item Bieżący stan transferu w postaci ilości serii/łączna liczba serii i ilości obrazów w każdej serii.
-    \item Meta dane zlecenia (Imię, Nazwisko, Pesel/Data urodzenia, modalność, kod badania, data i godzina badania, czas do którego należy dokonać opisu, uwagi do badania).
-  \end{enumerate}
-
-  \item W zależności od konfiguracji węzła zlecającego, badania mogą być prezentowane jednocześnie na listach wszystkich wybranych konsultantów, lub po kolei, tak jak odbywa się transfer danych obrazowych. W pierwszej sytuacji otwarcie badania oznacza jednocześnie rozpoczęcie jego transferu o ile nie był on otwarty przez inny węzeł.
-3. Badanie może być otwarte w dowolnym momencie transferu.
-4. W momencie otwarcie badania, nie może być ono otwarte na innym węźle.
-5. Jeżeli czas na opisanie badania zostanie przekroczone, badanie jest oznaczane jako przeterminowane.
-6. Jeden opisujący może otworzyć w danym czasie tylko jedno badanie.
-7. Opisujący badanie może przedłużyć czas opisu poprzez reakcję z systemem. Czas oczekiwania systemu na reakcję jest konfigurowalny.
-8. Obsługa badania przeterminowanego polega na jego cofnięciu do puli badań do opisu.
-9. Centrum gromadzi informację o stanie węzłów lokalnych.
-10. Routing badań jest wykonywany w oparciu o następujące parametry:
-		\begin{enumerate}
-		\item dostępności węzła - czy węzeł docelowy jest dostępny, czy nie (dostępność jest badana w sposób aktywny za pomocą zapytań HTTP)
-		\item czasy obsługi zleceń.
-		\item preferencji zlecającego.
-		\item statystyki z list i opisów powinny być zachowywane i archiwizowane.
-		\end{enumerate}
-
-\end{enumerate}
-
-
-\section{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
-
-Węzeł lokalny musi mieć możliwość komunikacji z lokalnym systemem PACS w celu:
-\begin{enumerate}
- \item po stronie zleceniodawcy: pozyskania wyników badania, które ma być opisane,
- \item po stronie konsultanta: przesłania wyników badania na stację diagnostyczną.
-\end{enumerate}
-
-Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał zbędnych trudności przy integracji z takimi systemami jak: TODO lista systemów, 
-
-Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
-\begin{enumerate}
-  \item aktywne odpytanie systemu PACS i pobranie plików do bufora na węźle lokalnym
-  \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym
+ \item węzły starają się w pełni wykorzystać przepustowość łączy między sobą,
+ \item węzły starają się najpierw przesłać jedno kompletne zlecenie nim zaczną przesyłać następne,
+ \item o ile jest taka potrzeba, to wskazane jest transferowanie więcej niż jednego zlecenia równolegle, jeśli uruchomienie nowego transferu nie powoduje pogorszenia transferu już przesyłanych zleceń,
+ \item jeśli transferowane są zlecenia o długim czasie na wykonanie opisu i pojawi się nowe zlecenie, o krótkim czasie na wykonanie opisu, to transfer zleceń o długim czasie na wykonanie opisu powinien być wstrzymamy jeśli poprawiłoby to transfer zlecenia o krótkim czasie na wykonanie opisu
 \end{enumerate}
 
 \section{Interfejs użytkownika}
@@ -235,6 +207,12 @@ Wymagany jest webowy interfejs użytkownika do realizacji wszystkich podstawowyc
 Wymagania dla webowego interfejsu użytkownika:
 
 \begin{enumerate}
+    \item Co najmniej 3 poziomy dostępu do interfejsu użytkownika:
+        \begin{enumerate}
+        \item technik -- może tworzyć zlecenia, ale nie może ich wysłać,
+        \item zleceniodawca -- uprawnienia technika powiększone o możliwość wysyłania zleceń,
+        \item administrator -- ma możliwość zmiany konfiguracji systemu i ingerencji w dane poza produkcyjnym schematem działania.
+        \end{enumerate}
     \item neutralność technologiczna zapewniona poprzez:
 	  \begin{enumerate}
 	  \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome
@@ -255,6 +233,16 @@ Podstawowe funkcje interfejsu użytkownika:
       \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
       \end{enumerate}
   \item Wysyłanie zlecenia: TODO wybranie preferowanego konsultanta
+  \item Prezentacja:
+    \begin{enumerate}
+      \item listy bieżących zleceń, zawierającej:
+	  \begin{enumerate}
+	  \item bieżący stan transferu zleceń w postaci ilości serii/łączna liczba serii i ilości obrazów w każdej serii u wszystkich zainteresowanych stron.
+	  \item meta dane zlecenia (Imię, Nazwisko, Pesel/Data urodzenia, modalność, kod badania, data i godzina badania, czas do którego należy dokonać opisu, uwagi do badania),
+	  \end{enumerate}
+      \item listy archiwalnych zleceń z możliwością przeszukiwania za pomocą dat oraz danych pacjenta
+    \end{enumerate}
+
 \end{enumerate}
 
 \section{Schemat pracy}
@@ -274,20 +262,50 @@ Podstawowe funkcje interfejsu użytkownika:
         \item wyszukać i pobrać pliki DICOM bezpośrednio z PACS
         \item wysłać poprzez interfejs web plik istniejący na terminalu użytkownika
         \item zmodyfikować wszystkie istotne na tym etapie parametry zlecenia
+        \item przy tworzeniu zlecenia, kod badania jest automatycznie ustawiany na podstawie tagów z pierwszego wybranego pliku DICOM (patrz \ref{zlecenia-konfig})
+        \item ustawienie kodu badania determinuje listę dostępnych pakietów usług
+        \item wybranie konkretnego pakietu usług determinuje listę konsultantów
+        \item w zależności od konfiguracji pakietu, zleceniodawca może mieć możliwość wybrania węzła konsultanta, do którego zlecenie będzie transferowane w pierwszej kolejności
         \end{enumerate}
 \end{enumerate}
 
-\section{Konfigurowalność}
+\section{Integracja węzłów lokalnych z lokalnymi systemami szpitalnymi}
 
-TODO Co musi być konfigurowalne w systemie zlecania 
-- definicje pakietów usług
-	- lista konsultantów
-	- obsługiwane kody badania
-	- czas na zrealizowanie zlecenia
-	- czy zleceniodawca może wybrać preferowanego konsultanta ???
-	- czy zlecenie ma się pojawić u wszystkich konsultanów 
-- mapowanie tagów DICOM na kody badania
-TODO konfigurowalność interfejsu HL7
+Węzeł lokalny musi mieć możliwość komunikacji z lokalnym systemem PACS w celu:
+\begin{enumerate}
+ \item po stronie zleceniodawcy: pozyskania wyników badania, które ma być opisane,
+ \item po stronie konsultanta: przesłania wyników badania na stację diagnostyczną.
+\end{enumerate}
+
+Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał zbędnych trudności przy integracji z takimi systemami jak: TODO lista systemów, 
+
+Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
+\begin{enumerate}
+  \item aktywne odpytanie systemu PACS i pobranie plików do bufora na węźle lokalnym
+  \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym
+\end{enumerate}
+
+\section{Konfigurowalność}
+\label{zlecenia-konfig}
+
+Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty sposób następujących parametrów systemu:
+\begin{enumerate}
+\item definicje pakietów usług
+  \begin{enumerate}
+   \item lista konsultantów
+   \item obsługiwane kody badania
+   \item czas na zrealizowanie zlecenia
+   \item czy zleceniodawca może wybrać preferowanego konsultanta
+   \item czy zlecenie ma się pojawić u wszystkich konsultantów
+   \item jakie są możliwe przedłużenia czasu
+  \end{enumerate}
+
+\item mapowanie tagów DICOM na kody badania
+
+\item TODO konfigurowalność interfejsu HL7
+
+\end{enumerate}
+
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
@@ -311,7 +329,7 @@ TODO konfigurowalność interfejsu HL7
 
 \section{Schematy działania}
 
-Działanie systemu MUSI uwzględniać obsługę niżej opisanych schematów dziłania.
+Działanie systemu MUSI uwzględniać obsługę niżej opisanych schematów działania.
 
 \subsection{Interfejs użytkownika - wyszukiwanie}
 \begin{enumerate}
@@ -360,7 +378,7 @@ Przebieg procesu komunikacji:
   \item Użytkownik wprowadza dane osobowe pacjenta poprzez interfejs użytkownika na $L_S$
   \item $L_S$, przeszukując podłączone do siebie LSS, tworzy $P_{SA}ID$,
 
-  TODO: co jeśli pacjenta nie ma w PACS'ie? co jeśli $L_S$ jest połączony z więcej niż jednym LSS - węzeł lokalny swój własny id pacjenta i wiąże go z LSS_ID 
+  Jeśli $L_S$ w podłączonych do siebie LSS nie znajdzie danych szukanego pacjenta, to tworzy on $P_{SA}ID$ podając siebie jako LSS i generując nowy, tymczasowy, unikalny ID pacjenta. To ID pacjenta jest przechowywane na węźle przynajmniej do czasu zakończenia wyszukiwania.
   
   \item $L_S$ wysyła zapytanie o $P_{SA}ID$ do $C$
   \item $C$ przeszukuje swoją bazę informacji powiązań identyfikatorów i w odpowiedzi wysyła
@@ -375,14 +393,10 @@ Przebieg procesu komunikacji:
   \item Za każdym razem kiedy odpytane $L_N$ znajdzie u siebie pacjenta o odpowiednich danych osobowych, to wysyła do $C$ powiadomienie
   o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
   \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
-
-TODO: inwalidacja bazy powiązań identyfikatorów 
-
-TODO: 3 typy alertów przy niezgodności danych pacjenta
+  \item Jeśli nastąpiło dopasowanie identyfikatorów pacjenta w różnych LSS, a po przesłaniu jego danych osobowych okazuje się, że są one różne, to użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych. W ramach obsługi zgłoszenia niewłaściwych danych administrator powinien mieć możliwość usunięcia błędnego powiązania z bazy w węźle centralnym
+  \item TODO heurystyka wykrywania różnic
 
 \end{enumerate}
-
-
 
 \section{Opis interfejsu użytkownika}
 
@@ -431,7 +445,7 @@ Zadania węzła lokalnego:
   pytamy przy szukaniu pacjenta w LSS)
 \end{itemize}
 
-% tutaj skończyłem - Seweryn
+RESZTA TODO tutaj skończyłem - Seweryn
 
 \item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
   \begin{enumerate}
@@ -459,9 +473,5 @@ Zadania węzła lokalnego:
   \item pobieranie danych z innych węzłów lokalnych
   \end{enumerate}
 \end{enumerate}
-
-Ponadto komunikacja pomiędzy węzłami lokalnymi między sobą, jak i pomiędzy nimi, a węzłem głównym musi być zabezpieczona przez zestawienie bezpiecznego tunelu VPN na poziomie sieci komputerowej (site-to-site, 'przezroczysty' VPN) lub jeśli to nie jest możliwe na poziomie węzła (client-to-site VPN)
-
-Transmisja danych musi zapewniać integralność, poufność i autentyczność przesyłanych danych. Można to zapewnić przez bezpośredni tunel VPN pomiędzy węzłami lokalnymi.
 
 \end{document}
