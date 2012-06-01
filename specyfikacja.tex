@@ -102,6 +102,16 @@ centralny musi być rejestrowany w sposób umożliwiający:
 
 \end{enumerate}
 
+\section{Konfigurowalność}
+\subsection{Komunikacja HL7}
+
+Interfejs komunikacji HL7 musi umożliwiać mapowania pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy może zostać przeformatowany na wewnętrzny jednolity format danych. Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
+
+Moduł udostępniania opisów w węźle lokalnym można konfigurować poprzez definicje URI, zakresu odpowiedzi i formy odpowiedzi (format HTML, XML). Konfiguracja (np. w zakresie formatowania odpowiedzi) może być dynamiczna na podstawie URI. 
+
+\subsection{Mapowanie tagów DICOM na kody badania}
+
+TODO - Rafał
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
@@ -221,7 +231,7 @@ Wymagania dla webowego interfejsu użytkownika:
     \item sprawność działania zapewniona poprzez:
 	  \begin{enumerate}
 	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
-	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać [określić, co to znaczy sprawnie działać] w przeglądarce uruchomionej na komputerze z procesorem o wydajności ??? i 360 MB pamięci RAM dostępnej dla przeglądarki
+	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki
 	  \end{enumerate}
 \end{enumerate}
 
@@ -232,7 +242,13 @@ Podstawowe funkcje interfejsu użytkownika:
       \item przy tworzeniu zlecenia użytkownik musi mieć możliwość dostarczenia kompletnej definicji zlecenia (patrz opis treści zlecenia)
       \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
       \end{enumerate}
-  \item Wysyłanie zlecenia: TODO wybranie preferowanego konsultanta
+  \item Wysyłanie zlecenia
+      \begin{enumerate}
+      \item Wybranie załącznika w formacie DICOM powinno automatycznie ustawiać pole "`kod badania"'. Pole to musi być edytowalne dla użytkownika.
+      \item Ustawienie pola "`kod badania"' powinni automatycznie wypełniać pole selekcji "`pakietu usług"' tylko tymi pakietami usług, które obsługują wybrany wcześniej kod badania.
+      \item Wybranie pakietu usług automatycznie ustawia czas na wykonanie badania i w zależności od konfiguracji pakietu, czas ten użytkownik może zmienić lub nie.
+      \item Wybranie pakietu usług automatycznie ustawia również listę węzłów konsultantów i w zależności od konfiguracji pakietu, użytkownik może wybrać konsultanta do którego w pierwszej kolejności badanie będzie wysłane, lub nie.
+      \end{enumerate}
   \item Prezentacja:
     \begin{enumerate}
       \item listy bieżących zleceń, zawierającej:
@@ -277,7 +293,7 @@ Węzeł lokalny musi mieć możliwość komunikacji z lokalnym systemem PACS w c
  \item po stronie konsultanta: przesłania wyników badania na stację diagnostyczną.
 \end{enumerate}
 
-Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał zbędnych trudności przy integracji z takimi systemami jak: TODO lista systemów, 
+Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami RIS. Interfejs musi mieć funkcjonalność potrzebną do zlecania opisu badań z poziomu systemu RIS oraz przekazywania gotowych opisów do systemu RIS. Interfejs musi być dokładnie opisany, tak aby podmioty trzecie mogły dostosować swoje systemy do korzystania z tego interfejsu. Dodatkowo interfejs w miarę możliwości powinien być tak zaprojektowany, aby nie sprawiał zbędnych trudności przy integracji z takimi systemami jak: TODO lista systemów, - Lista placówek - kbogu, dowiedzieć się Ragał Maciej, Kbogu. 
 
 Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
 \begin{enumerate}
@@ -292,7 +308,7 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
 \begin{enumerate}
 \item definicje pakietów usług
   \begin{enumerate}
-   \item lista konsultantów
+   \item lista węzłów konsultantów -- lista ta determinuje, które węzły będą mogły pobrać zlecenie do opisu; kolejność węzłów na liście ma znaczenie i wg. tej kolejności zlecenie jest wysyłane do węzłów (chyba, że pakiet umożliwia użytkownikowi wybranie preferowanego konsultanta)
    \item obsługiwane kody badania
    \item czas na zrealizowanie zlecenia
    \item czy zleceniodawca może wybrać preferowanego konsultanta
@@ -300,9 +316,6 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
    \item jakie są możliwe przedłużenia czasu
   \end{enumerate}
 
-\item mapowanie tagów DICOM na kody badania
-
-\item TODO konfigurowalność interfejsu HL7
 
 \end{enumerate}
 
@@ -318,14 +331,12 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
 \item[dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS.
 \item[identyfikator pacjenta] Identyfikator pacjenta używany w LSS. Identyfikator pacjenta zawsze występuje w kontekście
       konkretnego LSS, a bez niego nie ma znaczenia.
-\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS. Istnienie powiązania
-      identyfikatorów jest jednocześnie wskazaniem, na istnienie badań medycznych w różnych węzłach lokalnych dotyczących
-      tego samego pacjenta.
+\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS. Istnienie powiązania identyfikatorów jest jednocześnie wskazaniem, na istnienie badań medycznych w różnych węzłach lokalnych dotyczących tego samego pacjenta.
+\item[repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację opisów badań.
+\item[moduł udostępniania opisów] Moduł pracujący w węźle lokalnym, którego zadaniem jest dostarczanie opisów badań.
 \end{description}
 
 \section{Wymagania ogólne}
-
-
 
 \section{Schematy działania}
 
@@ -394,12 +405,49 @@ Przebieg procesu komunikacji:
   o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
   \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
   \item Jeśli nastąpiło dopasowanie identyfikatorów pacjenta w różnych LSS, a po przesłaniu jego danych osobowych okazuje się, że są one różne, to użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych. W ramach obsługi zgłoszenia niewłaściwych danych administrator powinien mieć możliwość usunięcia błędnego powiązania z bazy w węźle centralnym
-  \item TODO heurystyka wykrywania różnic
+  \item TODO heurystyka wykrywania różnic - Bartek
 
 \end{enumerate}
 
-\section{Opis interfejsu użytkownika}
+\section{Dostęp do opisów badań}
 
+Ze względu na utrudnienia w integracji Systemu z LSS typu RIS i HIS, które zwykle przechowują opisu badań, należy stworzyć dwa moduły realizujące dostęp do opisów badań przechowywanych w LSS i niedostępnych poprzez DICOM. Te moduły to:
+\begin{description}
+  \item[Repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację wyników badań. W sytuacji gdy system RIS/HIS nie udostępnia wyników badań URI, wyniki badań są zbierane w repozytorium opisów. Wyniki badań i ich aktualizacje, są przesyłane do repozytorium opisów w komunikatach HL7 przez systemy RIS/HIS. Repozytorium opisów przechowuje informacje o zarejestrowaniu pacjenta, zarejestrowaniu badania, statusie badania, wyniku badania. Repozytorium opisów można zasilić wynikami badań poprzez zbiorcze wysłanie wyników badań z systemu RIS/HIS do repozytorium opisów.
+  \item[Moduł udostępniania opisów] Moduł działa na węźle lokalnym i jego zadaniem jest udostępnienie dla tego węzła wyników badań. Wyniki badań mogą znajdować się w systemach RIS/HIS lub być dostępne w lokalnym repozytorium opisów. Moduł umożliwia dostęp do wyników badań poprzez HTTP zgodnie z filozofią REST. Opisy muszą mieć ustandaryzowaną strukturę i być możliwe do pobrania w następujących formatach: HTML czytelny dla człowieka po wyświetleniu w przeglądarce WWW, XML, JSON. Moduł udostępniania opisów w węźle lokalnym pobiera wyniki badań w celu ich udostępnienia w następujący sposób:
+  \begin{enumerate}
+    \item przez przekierowanie zapytania o wynik badania bezpośrednio do lokalnego systemu RIS/HIS z użyciem URI  jeżeli system RIS/HIS oferuje taką funkcjonalność,
+    \item przez odczytanie wyniku badania z lokalnego repozytorium opisów utworzonego na podstawie danych otrzymywanych z LSS (HIS, RIS)
+  \end{enumerate}
+
+\end{description}
+
+\section{Komunikacja z LSS za pomocą protokołu HL7}
+
+W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomocą protokołu HL7. Obsługiwane powinny być poniżej wymienione scenariusze.
+
+\subsection{LSS (RIS/HIS) do repozytorium opisów}
+
+\begin{enumerate}
+  \item System RIS/HIS wysyła komunikat do repozytorium opisów z informacją o zarejestrowaniu pacjenta, komunikat HL7 ADT A01. Na podstawie rejestracji zarejestrowania pacjenta węzeł lokalny może rozpocząć procedurę wyszukiwania badań pacjenta w innych węzłach lokalnych.
+  \item System RIS/HIS wysyła komunikat do repozytorium opisów komunikaty HL7 ORM O01 z informacją o:
+    \begin{enumerate}
+      \item zarejestrowaniu badania,
+      \item rozpoczęciu badania,
+      \item zakończeniu badania,
+    \end{enumerate}
+  \item System RIS/HIS wysyła komunikat HL7 ORU R01 do repozytorium opisów z wynikiem badania.
+\end{enumerate}
+
+\subsection{repozytorium opisów do LSS (RIS/HIS)}
+
+\begin{enumerate}
+  \item Repozytorium opisów wysyła wynik do systemu RIS/HIS za pomocą komunikatu HL7 ORU R01.
+  \item Repozytorium opisów umożliwia pobranie wyniku badania za pomocą mechanizmu URI.
+\end{enumerate}
+
+
+\section{Opis interfejsu użytkownika}
 
 \subsection{Interfejs administracyjny węzła lokalnego}
 
@@ -410,12 +458,9 @@ Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czyn
         \begin{enumerate}
           \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
           żadnych swoich ustawień, ale nie może zalogować się do systemu
-          \item TODO reakcja na alerty
+          \item TODO reakcja na alerty - Maciej
         \end{enumerate}
-
-  
 \end{enumerate}
-
 
 \section{Opis węzła centralnego}
 Zadania węzła centralnego:
@@ -445,7 +490,7 @@ Zadania węzła lokalnego:
   pytamy przy szukaniu pacjenta w LSS)
 \end{itemize}
 
-RESZTA TODO tutaj skończyłem - Seweryn
+TODO - Bartek i Rafał
 
 \item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
   \begin{enumerate}
