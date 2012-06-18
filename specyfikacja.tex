@@ -405,8 +405,14 @@ Przebieg procesu komunikacji:
   o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
   \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
   \item Jeśli nastąpiło dopasowanie identyfikatorów pacjenta w różnych LSS, a po przesłaniu jego danych osobowych okazuje się, że są one różne, to użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych. W ramach obsługi zgłoszenia niewłaściwych danych administrator powinien mieć możliwość usunięcia błędnego powiązania z bazy w węźle centralnym
-  \item TODO heurystyka wykrywania różnic - Bartek
-
+  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic $L_S$ będzie reagował w następujący sposób:
+   \begin{enumerate}
+      \item zgodność pól: imię, nazwisko; niezgodność pól: pesel lub data urodzenia; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
+      \item zgodność pól: pesel lub data urodzenia, nazwisko; niezgodność pól: imię ; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
+      \item zgodność pól: pesel lub data urodzenia, imię; niezgodność pól: nazwisko ; akcja: użytkownik powinien być o tym wyraźnie poinformowany
+      \item niezgodność co najmniej dwóch pól; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
+   \end{enumerate}
+  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic $L_S$ będzie sprawdzał stopień dopasowania pól, w których występują różnice. Jeżeli stopień dopasowania jest odpowiednio wysoki (np. brak jednej litery w jednym z pól) to $L_N$ powinien o tym wyraźnie poinformować użytkownika, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych 
 \end{enumerate}
 
 \section{Dostęp do opisów badań}
