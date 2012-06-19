@@ -231,7 +231,13 @@ Wymagania dla webowego interfejsu użytkownika:
     \item sprawność działania zapewniona poprzez:
 	  \begin{enumerate}
 	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
-	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki
+	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki, w szczególności:
+            \begin{enumerate}
+              \item użytkownik musi natychmiast widzieć reakcję systemu na wykonane przez niego działanie (kliknięcie myszą w link/przycisk, wciśnięcie klawisza),
+              \item przebieg wykonywania działań rutynowych powinien być tak zaprojektowany, aby żaden z kroków nie wymagał oczekiwania na uzyskanie rezultatu dłużej niż 2 sekundy,
+              \item procesy, które trwają dłużej niż 2 sekundy powinny mieć pasek postępu informujący użytkownika o przebiegu procesu,
+              \item procesy, które trają dłużej niż 30 sekund powinny być wykonywane w tle, a użytkownik powinien móc sprawdzać ich stan i w dowolnej chwili po zakończeniu mieć dostęp do rezultatów.
+            \end{enumerate}
 	  \end{enumerate}
 \end{enumerate}
 
@@ -457,15 +463,53 @@ W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomo
 
 \subsection{Interfejs administracyjny węzła lokalnego}
 
-Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
+Interfejs administracyjny musi posiadać następującą funkcjonalność:
 \begin{enumerate}
-  \item Zarządzanie użytkownikami
+  \item Zarządzanie użytkownikami.
+
         Administrator musi mieć możliwość:
         \begin{enumerate}
           \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
           żadnych swoich ustawień, ale nie może zalogować się do systemu
-          \item TODO reakcja na alerty - Maciej
+          \item ustalania uprwanień użytkowników,
+          \item zmiany hasła używkoników lub innych parametrów związanych z 
         \end{enumerate}
+
+  \item System może być źródłem trzech typów komunikatów, których obsługa jest rezlizowana poprzez interfejs użytkownika:
+    \begin{description}
+      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane
+programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych.
+Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach
+lokalnych do tego samego numeru PESEL może być efektem pomyłki i
+grozić utratą integralności danych. W klasie alertów mieszczą się też
+komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach
+w miarę możliwości powinny zawierać informację pozwalającą szybko
+zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.)
+
+      \item[Ostrzeżenia] komunikaty o średnim priorytecie sygnalizują
+nieprawdiłowości w działaniu systemu - np. przeterminowanie badania,
+brak połączenia pomiędzy węzłami itp. Ostrzeżenia dotyczą wydarzeń
+mniejszej wagi niż alerty. Nie niosą informacji o zdarzeniach
+zagrażających stabilności systemu. Ostrzeżenia również tworzono są
+programowo. TODO Maciej: czy przeterminowanie badania, to nieprawidłowośc w działaniu systemu?
+
+      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu,
+którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia
+powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości
+powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny
+sposób zgłoszenia awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota 
+    \end{description}
+
+\end{enumerate}
+
+\subsection{Interfejs administracyjny węzła centralnego}
+
+Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
+\begin{enumerate}
+  \item Aplikacja węzła centralnego powinna prezentować listę komunikatów w
+przejrzysty sposób, z możliwością filtrowania przynajmniej po dacie,
+treści i typie. Powinien istnieć mechanizm oznaczania i ukrywania
+komunikatów "obsłużonych".
 \end{enumerate}
 
 \section{Opis węzła centralnego}
