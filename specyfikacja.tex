@@ -12,7 +12,7 @@
 
 \title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
 \author{Zespół Projektowy}
-\date{03/03/2012}
+\date{25/06/2012}
 \maketitle
 
 \tableofcontents
@@ -100,18 +100,59 @@ centralny musi być rejestrowany w sposób umożliwiający:
   i zawiera formularz logowania do systemu lub w przypadku uwierzytelniania za pomocą certyfikatów X.509,
   przycisk wejścia do systemu.
 
+\subsection{Interfejs administracyjny węzła lokalnego}
+
+Interfejs administracyjny musi posiadać następującą funkcjonalność:
+\begin{enumerate}
+  \item W ramach zarządzania użytkownikami administrator musi mieć możliwość:
+    \begin{enumerate}
+      \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
+      żadnych swoich ustawień, ale nie może zalogować się do systemu
+      \item ustalania uprawnień użytkowników,
+      \item zmiany hasła użytkowników lub innych parametrów związanych z uwierzytelnianiem (np. DN certyfikatu X.509, którym użytkownik się uwierzytelnia)
+    \end{enumerate}
+
+  \item System może być źródłem trzech typów komunikatów, których obsługa jest realizowana poprzez interfejs użytkownika:
+    \begin{description}
+      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych. Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach lokalnych do tego samego numeru PESEL może być efektem pomyłki i grozić utratą integralności danych. W klasie alertów mieszczą się też komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach w miarę możliwości powinny zawierać informację pozwalającą szybko zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.)
+
+      \item[Ostrzeżenia] komunikaty o średnim priorytecie sygnalizują nieprawidłowości w działaniu systemu - np. przeterminowanie badania, brak połączenia pomiędzy węzłami itp. Ostrzeżenia dotyczą wydarzeń mniejszej wagi niż alerty. Nie niosą informacji o zdarzeniach zagrażających stabilności systemu. Ostrzeżenia również tworzono są programowo. TODO Maciej: czy przeterminowanie badania, to nieprawidłowość w działaniu systemu?
+
+      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu, którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny sposób zgłoszenia awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota
+    \end{description}
+
+\end{enumerate}
+
+\subsection{Interfejs administracyjny węzła centralnego}
+
+Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
+\begin{enumerate}
+  \item Aplikacja węzła centralnego powinna prezentować listę komunikatów w przejrzysty sposób, z możliwością filtrowania przynajmniej po dacie, treści i typie. Powinien istnieć mechanizm oznaczania i ukrywania komunikatów "obsłużonych".
+\end{enumerate}
+
 \end{enumerate}
 
 \section{Konfigurowalność}
+
 \subsection{Komunikacja HL7}
 
 Interfejs komunikacji HL7 musi umożliwiać mapowania pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy może zostać przeformatowany na wewnętrzny jednolity format danych. Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
 
 Moduł udostępniania opisów w węźle lokalnym można konfigurować poprzez definicje URI, zakresu odpowiedzi i formy odpowiedzi (format HTML, XML). Konfiguracja (np. w zakresie formatowania odpowiedzi) może być dynamiczna na podstawie URI. 
 
-\subsection{Mapowanie tagów DICOM na kody badania}
+\subsection{Mapowanie tagów DICOM}
 
-TODO - Rafał
+Komunikacja z lokalnymi systemami szpitalnymi LSS za pomocą protokołu DICOM musi obsługiwać możliwość elastycznego konfigurowania mapowania wartości zapisanych w tagach DICOM na wewnętrzne struktury danych systemu. Mapowanie powinno umożliwiać wskazanie pola (tagu) pliku DICOM, które zawiera interesujące dane i przypisanie go do określonego pola w wewnętrznej strukturze danych systemu wraz z określeniem przetwarzania wartości poprzez:
+\begin{enumerate}
+  \item użycie wyrażeń regularnych do modyfikacji wartości pola,
+  \item określenie słownika mapującego określone słowa kluczowe występujące w polu pliku DICOM na odpowiadające im słowa kluczowe zdefiniowane w wewnętrznej strukturze danych systemu
+\end{enumerate}
+
+Mapowanie musi działać w obu kierunkach, tzn. zarówno kiedy plik DICOM importowany jest z LSS, jak i kiedy jest do niego eksportowany.
+
+Musi też istnieć mechanizm filtrowania, dzięki któremu będzie można określić, jakie reguły mapujące mają być użyte, w zależności od wartości określonych pól pliku DICOM, bądź wewnętrznej struktury danych systemu (odpowiednio przy imporcie i eksporcie danych). Ma to na celu umożliwienie stosowania różnych mapowań np. w zależności od tego z jakiego źródła plik DICOM pochodzi.
+
+W szczególności, mapowanie ma umożliwić automatyczne wypełnianie wszystkich możliwych pól zlecenia (np. pola typ badania) po załączeniu do niego wyników badania, używając do tego celu dane pozyskane z plików DICOM tego badania. Przy pozyskiwaniu danych z plików DICOM powinno się ograniczyć do niezbędnego minimum ilość zapytań do LSS i ilość ściągniętych plików.
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
@@ -225,18 +266,24 @@ Wymagania dla webowego interfejsu użytkownika:
         \end{enumerate}
     \item neutralność technologiczna zapewniona poprzez:
 	  \begin{enumerate}
-	  \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome
-	  \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
+            \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome
+            \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
 	  \end{enumerate}
     \item sprawność działania zapewniona poprzez:
 	  \begin{enumerate}
+          \item automatyczne wypełnianie pól w formularzach danymi znanymi lub prawdopodobnymi, w szczególności:
+            \begin{enumerate}
+              \item automatyczne wstawianie prawdopodobnych dat,
+              \item automatyczne wypełnianie danych zlecenia danymi zawartymi w załączanych plikach DICOM,
+              \item automatyczne wstawianie ostatnio użytej wartości w polach, których jest to uzasadnione,
+            \end{enumerate}
 	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
 	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki, w szczególności:
             \begin{enumerate}
               \item użytkownik musi natychmiast widzieć reakcję systemu na wykonane przez niego działanie (kliknięcie myszą w link/przycisk, wciśnięcie klawisza),
               \item przebieg wykonywania działań rutynowych powinien być tak zaprojektowany, aby żaden z kroków nie wymagał oczekiwania na uzyskanie rezultatu dłużej niż 2 sekundy,
               \item procesy, które trwają dłużej niż 2 sekundy powinny mieć pasek postępu informujący użytkownika o przebiegu procesu,
-              \item procesy, które trają dłużej niż 30 sekund powinny być wykonywane w tle, a użytkownik powinien móc sprawdzać ich stan i w dowolnej chwili po zakończeniu mieć dostęp do rezultatów.
+              \item procesy, które trwają dłużej niż 30 sekund powinny być wykonywane w tle, a użytkownik powinien móc sprawdzać ich stan i w dowolnej chwili po zakończeniu mieć dostęp do rezultatów.
             \end{enumerate}
 	  \end{enumerate}
 \end{enumerate}
@@ -346,7 +393,7 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
 
 \section{Schematy działania}
 
-Działanie systemu MUSI uwzględniać obsługę niżej opisanych schematów działania.
+Działanie Bazy Metadanych musi uwzględniać obsługę niżej opisanych schematów działania.
 
 \subsection{Interfejs użytkownika - wyszukiwanie}
 \begin{enumerate}
@@ -460,57 +507,6 @@ W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomo
 
 
 \section{Opis interfejsu użytkownika}
-
-\subsection{Interfejs administracyjny węzła lokalnego}
-
-Interfejs administracyjny musi posiadać następującą funkcjonalność:
-\begin{enumerate}
-  \item Zarządzanie użytkownikami.
-
-        Administrator musi mieć możliwość:
-        \begin{enumerate}
-          \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
-          żadnych swoich ustawień, ale nie może zalogować się do systemu
-          \item ustalania uprwanień użytkowników,
-          \item zmiany hasła używkoników lub innych parametrów związanych z 
-        \end{enumerate}
-
-  \item System może być źródłem trzech typów komunikatów, których obsługa jest rezlizowana poprzez interfejs użytkownika:
-    \begin{description}
-      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane
-programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych.
-Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach
-lokalnych do tego samego numeru PESEL może być efektem pomyłki i
-grozić utratą integralności danych. W klasie alertów mieszczą się też
-komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach
-w miarę możliwości powinny zawierać informację pozwalającą szybko
-zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.)
-
-      \item[Ostrzeżenia] komunikaty o średnim priorytecie sygnalizują
-nieprawdiłowości w działaniu systemu - np. przeterminowanie badania,
-brak połączenia pomiędzy węzłami itp. Ostrzeżenia dotyczą wydarzeń
-mniejszej wagi niż alerty. Nie niosą informacji o zdarzeniach
-zagrażających stabilności systemu. Ostrzeżenia również tworzono są
-programowo. TODO Maciej: czy przeterminowanie badania, to nieprawidłowośc w działaniu systemu?
-
-      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu,
-którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia
-powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości
-powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny
-sposób zgłoszenia awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota 
-    \end{description}
-
-\end{enumerate}
-
-\subsection{Interfejs administracyjny węzła centralnego}
-
-Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
-\begin{enumerate}
-  \item Aplikacja węzła centralnego powinna prezentować listę komunikatów w
-przejrzysty sposób, z możliwością filtrowania przynajmniej po dacie,
-treści i typie. Powinien istnieć mechanizm oznaczania i ukrywania
-komunikatów "obsłużonych".
-\end{enumerate}
 
 \section{Opis węzła centralnego}
 Zadania węzła centralnego:
