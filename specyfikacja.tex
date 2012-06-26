@@ -10,7 +10,7 @@
 
 \begin{document}
 
-\title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu XXX}
+\title{Specyfikacja wymagań dla systemu telemedycznego realizowanego w ramach projektu ,,Telemedycyna – element e-zdrowia WZP''}
 \author{Zespół Projektowy}
 \date{25/06/2012}
 \maketitle
@@ -23,11 +23,11 @@ Od strony funkcjonalnej System składa się z dwóch niezależnych podsystemów 
 
 Słownik określeń wspólnych dla obu systemów:
 \begin{description}
-\item[System] centralny system telemedyczny, będący przedmiotem tej specyfikacji
-\item[Węzeł centralny] serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny posiada informacje o węzłach lokalnych i ma stałą łączność z nimi
-\item[Węzeł lokalny] serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z LSS
-\item[LSS] lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7
-\item[interfejs webowy] interfejs użytkownika dostępny zdalnie za pomocą przeglądarki WWW.
+\item[System] Centralny system telemedyczny, będący przedmiotem tej specyfikacji.
+\item[Węzeł centralny] Serwer lub grupa serwerów znajdująca się w siedzibie zamawiającego; węzeł centralny posiada informacje o węzłach lokalnych i ma stałą łączność z nimi.
+\item[Węzeł lokalny] Serwer znajdujący się w siedzibie użytkownika (w szpitalu); węzeł lokalny ma łączność z węzłem centralnym; innymi węzłami lokalnymi oraz z LSS.
+\item[LSS] Lokalne systemy szpitalne -- wewnętrzne systemy funkcjonujące w danej jednostce medycznej, typu PACS, HIS, RIS; komunikacja Systemu z nimi odbywa się za pomocą protokołów DICOM oraz HL7.
+\item[Interfejs webowy] Interfejs użytkownika dostępny zdalnie za pomocą przeglądarki WWW.
 \end{description}
 
 \section{Architektura fizyczna}
@@ -47,19 +47,16 @@ Węzeł lokalny musi być możliwy do uruchomienia na pojedynczym serwerze fizyc
 \begin{enumerate}
  \item Węzeł centralny oraz węzły lokalne muszą być dwojako zabezpieczone:
     \begin{enumerate}
-    \item wszystkie interfejsy zewnętrzne (interfejsy użytkownika, zdalne API itp.) muszą posiadać zabezpieczenia
-    pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania;
-    komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
-    \item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego
-    dany interfejs; zapora ogniowa udostępnia interfejsy zewnętrzne tylko niezbędnym klientom/użytkownikom.
+    \item wszystkie interfejsy zewnętrzne (interfejs użytkownika, zdalne API itp.) muszą posiadać zabezpieczenia pozwalające na kontrolę dostępu do nich za pomocą odpowiednich mechanizmów uwierzytelniania i autoryzowania; komunikacja z interfejsami zewnętrznymi odbywa się poprzez połączenia szyfrowane; mechanizmy te muszę zapewniać pełne bezpieczeństwo niezależne od zabezpieczenia drugiego,
+    \item dostęp do interfejsów zewnętrznych jest kontrolowany za pomocą zapory ogniowej serwera udostępniającego dany interfejs; zapora ogniowa udostępnia interfejsy zewnętrzne tylko niezbędnym programom klienckim.
     \end{enumerate}
  \item Oba podsystemy korzystają ze wspólnej bazy użytkowników, tak aby użytkownik uwierzytelniając się za pomocą tych samych danych mógł korzystać z obu podsystemów, jeśli ma to tego uprawnienia.
- \item Jeden profil użytkownika zawiera atrybuty specyficzne dla jednego jak i drugiego podsystemu.
+ \item Jeden profil użytkownika zawiera atrybuty specyficzne zarówno dla jednego, jak i drugiego podsystemu.
 \end{enumerate}
 
 \section{Ochrona danych osobowych}
 
-Węzeł centralny nie gromadzi i nie przetwarza danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych, u których są zainstalowane mogą przetwarzać dane osobowe.
+Węzeł centralny nie gromadzi i nie przetwarza danych osobowych ani danych wrażliwych. Węzły lokalne, będące pod zarządem jednostek medycznych, u których są zainstalowane, mogą przetwarzać dane osobowe.
 
 \section{Rejestracja przebiegu procesów oraz raportowanie}
 
@@ -86,7 +83,7 @@ centralny musi być rejestrowany w sposób umożliwiający:
     \item efekty weryfikacji powinny być tak prezentowane, aby użytkownik mógł szybko określić, które pola mają
     nieprawidłową treść (użycie odpowiednich kolorów w celu oznaczenia prawidłowych i nieprawidłowych pól oraz towarzyszących
     im komunikatów),
-    \item jeśli formularz zawiera pola z nieprawidłowymi danymi, to użytkownik nie może wywołać akcji dla której dostarcza on dane
+    \item jeśli formularz zawiera pola z nieprawidłowymi danymi, to użytkownik nie może wywołać akcji, dla której dostarcza on dane.
   \end{enumerate}
 
   \item Możliwość zdefiniowania wyglądu interfejsu użytkownika za pomocą CSS (Cascading Style Sheets).
@@ -106,19 +103,18 @@ Interfejs administracyjny musi posiadać następującą funkcjonalność:
 \begin{enumerate}
   \item W ramach zarządzania użytkownikami administrator musi mieć możliwość:
     \begin{enumerate}
-      \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci
-      żadnych swoich ustawień, ale nie może zalogować się do systemu
+      \item dodawania, modyfikowania, usuwania i blokowania użytkowników; zablokowany użytkownik nie traci żadnych swoich ustawień, ale nie może zalogować się do systemu,
       \item ustalania uprawnień użytkowników,
-      \item zmiany hasła użytkowników lub innych parametrów związanych z uwierzytelnianiem (np. DN certyfikatu X.509, którym użytkownik się uwierzytelnia)
+      \item zmiany hasła użytkowników lub innych parametrów związanych z uwierzytelnianiem (np. DN certyfikatu X.509, którym użytkownik się uwierzytelnia).
     \end{enumerate}
 
   \item System może być źródłem trzech typów komunikatów, których obsługa jest realizowana poprzez interfejs użytkownika:
     \begin{description}
-      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych. Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach lokalnych do tego samego numeru PESEL może być efektem pomyłki i grozić utratą integralności danych. W klasie alertów mieszczą się też komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach w miarę możliwości powinny zawierać informację pozwalającą szybko zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.)
+      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych. Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach lokalnych do tego samego numeru PESEL może być efektem pomyłki i grozić utratą integralności danych. W klasie alertów mieszczą się też komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach w miarę możliwości powinny zawierać informację pozwalającą szybko zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.), TODO: jeśli to ma być w interfejsie użytkownika/administratora, to raczej powinna chyba się pojawić nazwa modułu, jego funkcji i zrozumiały opis problemu,
 
       \item[Ostrzeżenia] komunikaty o średnim priorytecie sygnalizują nieprawidłowości w działaniu systemu - np. przeterminowanie badania, brak połączenia pomiędzy węzłami itp. Ostrzeżenia dotyczą wydarzeń mniejszej wagi niż alerty. Nie niosą informacji o zdarzeniach zagrażających stabilności systemu. Ostrzeżenia również tworzono są programowo. TODO Maciej: czy przeterminowanie badania, to nieprawidłowość w działaniu systemu?
 
-      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu, którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny sposób zgłoszenia awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota
+      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu, którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny sposób zgłoszenia sytuacji awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota
     \end{description}
 
 \end{enumerate}
@@ -127,17 +123,22 @@ Interfejs administracyjny musi posiadać następującą funkcjonalność:
 
 Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czynności:
 \begin{enumerate}
-  \item Aplikacja węzła centralnego powinna prezentować listę komunikatów w przejrzysty sposób, z możliwością filtrowania przynajmniej po dacie, treści i typie. Powinien istnieć mechanizm oznaczania i ukrywania komunikatów "obsłużonych".
+  \item Aplikacja węzła centralnego powinna prezentować listę komunikatów w przejrzysty sposób, z możliwością filtrowania przynajmniej po dacie, treści i typie. Powinien istnieć mechanizm oznaczania i ukrywania komunikatów ,,obsłużonych''
 \end{enumerate}
 
 \end{enumerate}
 
 \section{Konfigurowalność}
 
+TODO Seweryn: zmienić sekcję konfigurowalność na mapowanie
+
 \subsection{Komunikacja HL7}
 
-Interfejs komunikacji HL7 musi umożliwiać mapowania pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy może zostać przeformatowany na wewnętrzny jednolity format danych. Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
+TODO Seweryn: wyekstrahować wspólne cechy obu mapowań i przenieść do nadrzędnej sekcji
 
+Interfejs komunikacji HL7 musi umożliwiać mapowane pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy, może zostać przetłumaczony na wewnętrzną strukturę danych systemu. Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
+
+TODO Seweryn: przenieść opis modułu udostępniania do systemu metadanych i rozwinąć go
 Moduł udostępniania opisów w węźle lokalnym można konfigurować poprzez definicje URI, zakresu odpowiedzi i formy odpowiedzi (format HTML, XML). Konfiguracja (np. w zakresie formatowania odpowiedzi) może być dynamiczna na podstawie URI. 
 
 \subsection{Mapowanie tagów DICOM}
@@ -145,10 +146,12 @@ Moduł udostępniania opisów w węźle lokalnym można konfigurować poprzez de
 Komunikacja z lokalnymi systemami szpitalnymi LSS za pomocą protokołu DICOM musi obsługiwać możliwość elastycznego konfigurowania mapowania wartości zapisanych w tagach DICOM na wewnętrzne struktury danych systemu. Mapowanie powinno umożliwiać wskazanie pola (tagu) pliku DICOM, które zawiera interesujące dane i przypisanie go do określonego pola w wewnętrznej strukturze danych systemu wraz z określeniem przetwarzania wartości poprzez:
 \begin{enumerate}
   \item użycie wyrażeń regularnych do modyfikacji wartości pola,
-  \item określenie słownika mapującego określone słowa kluczowe występujące w polu pliku DICOM na odpowiadające im słowa kluczowe zdefiniowane w wewnętrznej strukturze danych systemu
+  \item określenie słownika mapującego określone słowa kluczowe występujące w polu pliku DICOM na odpowiadające im słowa kluczowe zdefiniowane w wewnętrznej strukturze danych systemu.
 \end{enumerate}
 
 Mapowanie musi działać w obu kierunkach, tzn. zarówno kiedy plik DICOM importowany jest z LSS, jak i kiedy jest do niego eksportowany.
+
+Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
 
 Musi też istnieć mechanizm filtrowania, dzięki któremu będzie można określić, jakie reguły mapujące mają być użyte, w zależności od wartości określonych pól pliku DICOM, bądź wewnętrznej struktury danych systemu (odpowiednio przy imporcie i eksporcie danych). Ma to na celu umożliwienie stosowania różnych mapowań np. w zależności od tego z jakiego źródła plik DICOM pochodzi.
 
@@ -176,20 +179,20 @@ Zlecenie jest dokumentem elektronicznym zawierającym opis zlecenia wraz z niezb
 
 Zlecenie powinno posiadać co najmniej następujące atrybuty:
 \begin{enumerate*}
-\item globalnie unikatowy identyfikator zlecenia
-\item dane identyfikujące zleceniodawcę
-\item dane kontaktowe zleceniodawcy
-\item datę wykonania badania
-\item listę załączników 
-\item zanonimizowane dane o pacjencie, takie jak wiek, płeć
-\item treść definiującą co ma być opisane
-\item określenie uporządkowanej listy odbiorców zlecenia
-\item określenie nazwy usługi (pakietu usług) do której zlecenie jest kierowane
-\item określenie typu badania
-\item określenie modalności
-\item określenie czasu na wykonanie opisu badania (z dokładnością do co najmniej 1 minuty)
-\item określenie schematu powiadamiania węzłów konsultantów o zgłoszonym zleceniu 
-\item określenie ilości i długości możliwych przedłużeń czasu na wykonanie badania
+\item globalnie unikatowy identyfikator zlecenia,
+\item dane identyfikujące zleceniodawcę,
+\item dane kontaktowe zleceniodawcy,
+\item datę wykonania badania,
+\item listę załączników,
+\item zanonimizowane dane o pacjencie, takie jak wiek, płeć,
+\item treść definiującą co ma być opisane,
+\item określenie uporządkowanej listy odbiorców zlecenia,
+\item określenie nazwy usługi (pakietu usług) do której zlecenie jest kierowane,
+\item określenie typu badania,
+\item określenie modalności,
+\item określenie czasu na wykonanie opisu badania (z dokładnością do co najmniej 1 minuty),
+\item określenie schematu powiadamiania węzłów konsultantów o zgłoszonym zleceniu,
+\item określenie ilości i długości możliwych przedłużeń czasu na wykonanie badania.
 \end{enumerate*}
 
 Pakiet usług jest definiowany na węźle lokalnym zleceniodawcy. Pakiet usług predefiniuje listę konsultantów i wybrane atrybuty zlecenia. Patrz \ref{zlecenia-konfig}
@@ -206,7 +209,7 @@ Wymagana jest implementacja co najmniej 2 schematów powiadamiania węzłów kon
 \item Na węźle centralnym nie pojawiają się dane wrażliwe i osobowe.
 \item W celu wymiany danych wrażliwych węzły lokalne komunikują się bezpośrednio między sobą.
 \item Komunikaty sygnalizacyjne informujące o przebiegu obsługi zlecenia przechodzą przez węzeł centralny.
-\item Węzeł centralny gromadzi pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach jak i o zleceniach przetworzonych w przeszłości.
+\item Węzeł centralny gromadzi pełną wiedzę zarówno o aktualnie przetwarzanych zleceniach, jak i o zleceniach przetworzonych w przeszłości.
 \item Dostęp do definicji zlecenia i załączonych do niego dokumentów mają tylko węzły konsultantów określone przez zleceniodawcę. Dostęp ten odbywa się w sposób i w kolejności określonej przez zleceniodawcę.
 \end{enumerate}
 
@@ -248,7 +251,7 @@ Optymalizacja transferu zleceń pod kątem jak najszybszego uzyskania opisu bada
  \item węzły starają się w pełni wykorzystać przepustowość łączy między sobą,
  \item węzły starają się najpierw przesłać jedno kompletne zlecenie nim zaczną przesyłać następne,
  \item o ile jest taka potrzeba, to wskazane jest transferowanie więcej niż jednego zlecenia równolegle, jeśli uruchomienie nowego transferu nie powoduje pogorszenia transferu już przesyłanych zleceń,
- \item jeśli transferowane są zlecenia o długim czasie na wykonanie opisu i pojawi się nowe zlecenie, o krótkim czasie na wykonanie opisu, to transfer zleceń o długim czasie na wykonanie opisu powinien być wstrzymamy jeśli poprawiłoby to transfer zlecenia o krótkim czasie na wykonanie opisu
+ \item jeśli transferowane są zlecenia o długim czasie na wykonanie opisu i pojawi się nowe zlecenie, o krótkim czasie na wykonanie opisu, to transfer zleceń o długim czasie na wykonanie opisu powinien być wstrzymany, jeśli poprawiłoby to transfer zlecenia o krótkim czasie na wykonanie opisu.
 \end{enumerate}
 
 \section{Interfejs użytkownika}
@@ -266,8 +269,8 @@ Wymagania dla webowego interfejsu użytkownika:
         \end{enumerate}
     \item neutralność technologiczna zapewniona poprzez:
 	  \begin{enumerate}
-            \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome
-            \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego na którym przeglądarka działa.
+            \item poprawne działanie na najnowszej na dzień ogłoszenia przetargu wersji popularnych przeglądarek WWW, co najmniej takich jak: MS Internet Explorer, Mozilla Firefox oraz Google Chrome,
+            \item realizację wszystkich podstawowych funkcji interfejsu użytkownika bez wymagania jakichkolwiek dodatków do przeglądarek, czy używania funkcji przeglądarek specyficznych dla określonego systemu operacyjnego, na którym przeglądarka działa.
 	  \end{enumerate}
     \item sprawność działania zapewniona poprzez:
 	  \begin{enumerate}
@@ -277,8 +280,8 @@ Wymagania dla webowego interfejsu użytkownika:
               \item automatyczne wypełnianie danych zlecenia danymi zawartymi w załączanych plikach DICOM,
               \item automatyczne wstawianie ostatnio użytej wartości w polach, których jest to uzasadnione,
             \end{enumerate}
-	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych
-	  \item takie zaprojektowanie interfejsu aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki, w szczególności:
+	  \item takie zaprojektowanie interfejsu, aby zminimalizować ilość interakcji z użytkownikiem -- minimalizacja ilości kliknięć wymaganych do wykonania określonej czynności oraz ilość wprowadzanych ręcznie przez użytkownika danych,
+	  \item takie zaprojektowanie interfejsu, aby zminimalizować czas reakcji interfejsu na akcję użytkownika - interfejs użytkownika musi sprawnie działać w przeglądarce uruchomionej na komputerze z procesorem o wydajności PassMark wynoszącej 200O i 380 MB pamięci RAM dostępnej dla przeglądarki, w szczególności:
             \begin{enumerate}
               \item użytkownik musi natychmiast widzieć reakcję systemu na wykonane przez niego działanie (kliknięcie myszą w link/przycisk, wciśnięcie klawisza),
               \item przebieg wykonywania działań rutynowych powinien być tak zaprojektowany, aby żaden z kroków nie wymagał oczekiwania na uzyskanie rezultatu dłużej niż 2 sekundy,
@@ -292,24 +295,24 @@ Podstawowe funkcje interfejsu użytkownika:
 \begin{enumerate}
   \item Tworzenie zlecenia:
       \begin{enumerate}
-      \item przy tworzeniu zlecenia użytkownik musi mieć możliwość dostarczenia kompletnej definicji zlecenia (patrz opis treści zlecenia)
-      \item użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia
+      \item Przy tworzeniu zlecenia użytkownik musi mieć możliwość dostarczenia kompletnej definicji zlecenia (patrz opis treści zlecenia).
+      \item Użytkownik musi mieć możliwość załączenia do zlecenia plików z wynikami badań oraz innych plików (np. skan  skierowania na badanie); wymagana jest obsługa 3 sposobów dostarczania plików: wybór pliku z zasobów dyskowych dostępnych w systemie operacyjnym, na którym działa przeglądarka, wybór pliku znajdującego się w buforze plików DICOM na węźle lokalnym, uruchomienie wyszukiwarki plików w systemie PACS, a następnie pobranie wybranych przez użytkownika plików do bufora i automatyczne załączenie ich do zlecenia.
       \end{enumerate}
-  \item Wysyłanie zlecenia
+  \item Wysyłanie zlecenia:
       \begin{enumerate}
       \item Wybranie załącznika w formacie DICOM powinno automatycznie ustawiać pole "`kod badania"'. Pole to musi być edytowalne dla użytkownika.
       \item Ustawienie pola "`kod badania"' powinni automatycznie wypełniać pole selekcji "`pakietu usług"' tylko tymi pakietami usług, które obsługują wybrany wcześniej kod badania.
       \item Wybranie pakietu usług automatycznie ustawia czas na wykonanie badania i w zależności od konfiguracji pakietu, czas ten użytkownik może zmienić lub nie.
-      \item Wybranie pakietu usług automatycznie ustawia również listę węzłów konsultantów i w zależności od konfiguracji pakietu, użytkownik może wybrać konsultanta do którego w pierwszej kolejności badanie będzie wysłane, lub nie.
+      \item Wybranie pakietu usług automatycznie ustawia również listę węzłów konsultantów i w zależności od konfiguracji pakietu, użytkownik może wybrać konsultanta, do którego w pierwszej kolejności badanie będzie wysłane, lub nie.
       \end{enumerate}
   \item Prezentacja:
     \begin{enumerate}
       \item listy bieżących zleceń, zawierającej:
 	  \begin{enumerate}
-	  \item bieżący stan transferu zleceń w postaci ilości serii/łączna liczba serii i ilości obrazów w każdej serii u wszystkich zainteresowanych stron.
+	  \item bieżący stan transferu zleceń w postaci ilości serii/łączna liczba serii i ilości obrazów w każdej serii u wszystkich zainteresowanych stron,
 	  \item meta dane zlecenia (Imię, Nazwisko, Pesel/Data urodzenia, modalność, kod badania, data i godzina badania, czas do którego należy dokonać opisu, uwagi do badania),
 	  \end{enumerate}
-      \item listy archiwalnych zleceń z możliwością przeszukiwania za pomocą dat oraz danych pacjenta
+      \item listy archiwalnych zleceń z możliwością przeszukiwania za pomocą dat oraz danych pacjenta.
     \end{enumerate}
 
 \end{enumerate}
@@ -327,14 +330,14 @@ Podstawowe funkcje interfejsu użytkownika:
         \end{enumerate}
 \item W ramach tworzenia/modyfikacji zlecenia użytkownik może:
         \begin{enumerate}
-        \item wybrać pliki DICOM (pogrupowane np. wg. StudyUID, albo nazwy pacjenta) znajdujące się w buforze na węźle (pliki do bufora trafiają w wyniku wysłania ich do węzła z poziomu systemu PACS)
-        \item wyszukać i pobrać pliki DICOM bezpośrednio z PACS
-        \item wysłać poprzez interfejs web plik istniejący na terminalu użytkownika
-        \item zmodyfikować wszystkie istotne na tym etapie parametry zlecenia
-        \item przy tworzeniu zlecenia, kod badania jest automatycznie ustawiany na podstawie tagów z pierwszego wybranego pliku DICOM (patrz \ref{zlecenia-konfig})
-        \item ustawienie kodu badania determinuje listę dostępnych pakietów usług
-        \item wybranie konkretnego pakietu usług determinuje listę konsultantów
-        \item w zależności od konfiguracji pakietu, zleceniodawca może mieć możliwość wybrania węzła konsultanta, do którego zlecenie będzie transferowane w pierwszej kolejności
+        \item wybrać pliki DICOM (pogrupowane np. wg. StudyUID, albo nazwy pacjenta) znajdujące się w buforze na węźle (pliki do bufora trafiają w wyniku wysłania ich do węzła z poziomu systemu PACS),
+        \item wyszukać i pobrać pliki DICOM bezpośrednio z PACS,
+        \item wysłać poprzez interfejs web plik istniejący na terminalu użytkownika,
+        \item zmodyfikować wszystkie istotne na tym etapie parametry zlecenia,
+        \item przy tworzeniu zlecenia, kod badania jest automatycznie ustawiany na podstawie tagów z pierwszego wybranego pliku DICOM (patrz \ref{zlecenia-konfig}),
+        \item ustawienie kodu badania determinuje listę dostępnych pakietów usług,
+        \item wybranie konkretnego pakietu usług determinuje listę konsultantów,
+        \item w zależności od konfiguracji pakietu, zleceniodawca może mieć możliwość wybrania węzła konsultanta, do którego zlecenie będzie transferowane w pierwszej kolejności.
         \end{enumerate}
 \end{enumerate}
 
@@ -350,8 +353,8 @@ Węzeł lokalny musi mieć interfejs HL7 służący do komunikacji z systemami R
 
 Pozyskiwanie danych z systemu PACS musi odbywać się na 2 sposoby:
 \begin{enumerate}
-  \item aktywne odpytanie systemu PACS i pobranie plików do bufora na węźle lokalnym
-  \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym
+  \item aktywne odpytanie systemu PACS i pobranie plików do bufora na węźle lokalnym,
+  \item pasywne oczekiwanie na dostarczenie plików przez PACS lub inny węzeł DICOM; dostarczone pliki zapisywane są w buforze na węźle lokalnym.
 \end{enumerate}
 
 \section{Konfigurowalność}
@@ -361,12 +364,12 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
 \begin{enumerate}
 \item definicje pakietów usług
   \begin{enumerate}
-   \item lista węzłów konsultantów -- lista ta determinuje, które węzły będą mogły pobrać zlecenie do opisu; kolejność węzłów na liście ma znaczenie i wg. tej kolejności zlecenie jest wysyłane do węzłów (chyba, że pakiet umożliwia użytkownikowi wybranie preferowanego konsultanta)
-   \item obsługiwane kody badania
-   \item czas na zrealizowanie zlecenia
-   \item czy zleceniodawca może wybrać preferowanego konsultanta
-   \item czy zlecenie ma się pojawić u wszystkich konsultantów
-   \item jakie są możliwe przedłużenia czasu
+   \item lista węzłów konsultantów -- lista ta determinuje, które węzły będą mogły pobrać zlecenie do opisu; kolejność węzłów na liście ma znaczenie i wg tej kolejności zlecenie jest wysyłane do węzłów (chyba, że pakiet umożliwia użytkownikowi wybranie preferowanego konsultanta),
+   \item obsługiwane kody badania,
+   \item czas na zrealizowanie zlecenia,
+   \item czy zleceniodawca może wybrać preferowanego konsultanta,
+   \item czy zlecenie ma się pojawić u wszystkich konsultantów,
+   \item jakie są możliwe przedłużenia czasu.
   \end{enumerate}
 
 
@@ -379,14 +382,14 @@ Administrator węzła lokalnego musi mieć możliwość konfigurowania w prosty 
 
 \section{Definicje}
 \begin{description}
-\item[użytkownik] Uprawniony pracownik jednostki medycznej posiadającej węzeł lokalny, który chce pozyskać dane
+\item[Użytkownik] Uprawniony pracownik jednostki medycznej posiadającej węzeł lokalny, który chce pozyskać dane
       medyczne dostępne w innych jednostkach medycznych.
-\item[dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS.
-\item[identyfikator pacjenta] Identyfikator pacjenta używany w LSS. Identyfikator pacjenta zawsze występuje w kontekście
+\item[Dane medyczne] Wyniki badań medycznych pacjentów oraz ich opisy przechowywane w LSS.
+\item[Identyfikator pacjenta] Identyfikator pacjenta używany w LSS. Identyfikator pacjenta zawsze występuje w kontekście
       konkretnego LSS, a bez niego nie ma znaczenia.
-\item[baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS. Istnienie powiązania identyfikatorów jest jednocześnie wskazaniem, na istnienie badań medycznych w różnych węzłach lokalnych dotyczących tego samego pacjenta.
-\item[repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację opisów badań.
-\item[moduł udostępniania opisów] Moduł pracujący w węźle lokalnym, którego zadaniem jest dostarczanie opisów badań.
+\item[Baza powiązań identyfikatorów] Baza danych wiążąca identyfikatory pacjentów z różnych LSS. Istnienie powiązania identyfikatorów jest jednocześnie wskazaniem, na istnienie badań medycznych w różnych węzłach lokalnych dotyczących tego samego pacjenta.
+\item[Repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację opisów badań.
+\item[Moduł udostępniania opisów] Moduł pracujący w węźle lokalnym, którego zadaniem jest dostarczanie opisów badań.
 \end{description}
 
 \section{Wymagania ogólne}
@@ -399,38 +402,33 @@ Działanie Bazy Metadanych musi uwzględniać obsługę niżej opisanych schemat
 \begin{enumerate}
   \item Użytkownik uwierzytelnia się w systemie i uzyskuje dostęp do interfejsu użytkownika.
 
-    Uwierzytelnienie (logowanie) może odbywać się za pomocą loginu i hasła lub certyfikatu X.509 (
-    zaimplementowane mają być obie metody). Bez uwierzytelnienia się użytkownika nie ma dostępu do
+    Uwierzytelnienie (logowanie) może odbywać się za pomocą loginu i hasła lub certyfikatu X.509 
+    (zaimplementowane mają być obie metody). Bez uwierzytelnienia się użytkownika nie ma dostępu do
     żadnych funkcji ani informacji dostępnych w systemie, poza informacją o sposobie skontaktowania
     się z lokalnym administratorem.
 
   \item Użytkownik wprowadza do węzła lokalnego dane osobowe pacjenta, którego dane medyczne są poszukiwane.
 
-        Wymagane jest aby użytkownik wprowadził 3 dane: imię, nazwisko oraz datę urodzenia lub PESEL.
+        Wymagane jest, aby użytkownik wprowadził 3 dane: imię, nazwisko oraz datę urodzenia lub PESEL.
         Data musi być wprowadzana w formacie ISO 8601 i poddawana weryfikacji. PESEL również musi być
         poddawany weryfikacji włącznie ze sprawdzeniem cyfry kontrolnej.
   
-  \item Użytkownik jednym przyciskiem zatwierdza wprowadzone dane, rozpoczyna procedurę wyszukiwania danych i przenosi
-  się na ekran prezentacji wyników.
+  \item Użytkownik jednym przyciskiem zatwierdza wprowadzone dane, rozpoczyna procedurę wyszukiwania danych i przenosi się na ekran prezentacji wyników.
 
-        Zbieranie odpowiedzi na zapytanie odbywa się w tle. Uzyskane odpowiedzi są na bieżąco prezentowane na
-        ekranie wyników bez oczekiwania na zakończenie całej procedury wyszukiwania. W trakcie zbierania odpowiedzi
-        interfejs użytkownika nie jest zablokowany i użytkownik może przeglądać wyniki, które na bieżąco się pojawiają.
-        Użytkownik może za pomocą przycisku przerwać procedurę wyszukiwania. Przerwanie procedury wyszukiwania
-        nie wpływa na otrzymane już wyniki, a jedynie zatrzymuje dalsze odpytywanie.
+        Zbieranie odpowiedzi na zapytanie odbywa się w tle. Uzyskane odpowiedzi są na bieżąco prezentowane na ekranie wyników bez oczekiwania na zakończenie całej procedury wyszukiwania. W trakcie zbierania odpowiedzi interfejs użytkownika nie jest zablokowany i użytkownik może przeglądać wyniki, które na bieżąco się pojawiają. Użytkownik może za pomocą przycisku przerwać procedurę wyszukiwania. Przerwanie procedury wyszukiwania nie wpływa na otrzymane już wyniki, a jedynie zatrzymuje dalsze odpytywanie.
   
 \end{enumerate}
 
 \subsection{Węzły - wyszukiwanie}
 
-Aby spełnić wymagania funkcjonalne węzły mogą się komunikować np. w poniżej opisany sposób.
+Aby spełnić wymagania funkcjonalne, węzły mogą się komunikować np. w poniżej opisany sposób.
 Definicje symboli użytych w opisie:
 \begin{description}
   \item[\bm{$C$}] Węzeł centralny
   \item[\bm{$L_S$}] Węzeł szukający danych
   \item[\bm{$L_N$}] Dowolny, zdalny względem $L_S$, węzeł lokalny o numerze $N$
-  \item[\bm{$P_{SA}ID$}] Identyfikator pacjenta $A$ jakim posługuje się węzeł szukający $L_S$
-  \item[\bm{$P_{NA}ID$}] Identyfikator pacjenta $A$ jakim posługuje się węzeł odpowiadający $L_N$.
+  \item[\bm{$P_{SA}ID$}] Identyfikator pacjenta $A$, jakim posługuje się węzeł szukający $L_S$
+  \item[\bm{$P_{NA}ID$}] Identyfikator pacjenta $A$, jakim posługuje się węzeł odpowiadający $L_N$.
 \end{description}
 
 Identyfikator pacjenta składa się z trzech elementów: identyfikatora węzła lokalnego, identyfikatora LSS i identyfikatora
@@ -439,44 +437,41 @@ ten URI z dodanymi na końcu ustalonymi etykietami powinno dać w wyniku dane os
   
 Przebieg procesu komunikacji:
 \begin{enumerate}
-  \item Użytkownik wprowadza dane osobowe pacjenta poprzez interfejs użytkownika na $L_S$
-  \item $L_S$, przeszukując podłączone do siebie LSS, tworzy $P_{SA}ID$,
+  \item Użytkownik wprowadza dane osobowe pacjenta poprzez interfejs użytkownika na $L_S$.
+  \item $L_S$, przeszukując podłączone do siebie LSS, tworzy $P_{SA}ID$.
 
   Jeśli $L_S$ w podłączonych do siebie LSS nie znajdzie danych szukanego pacjenta, to tworzy on $P_{SA}ID$ podając siebie jako LSS i generując nowy, tymczasowy, unikalny ID pacjenta. To ID pacjenta jest przechowywane na węźle przynajmniej do czasu zakończenia wyszukiwania.
   
-  \item $L_S$ wysyła zapytanie o $P_{SA}ID$ do $C$
-  \item $C$ przeszukuje swoją bazę informacji powiązań identyfikatorów i w odpowiedzi wysyła
+  \item $L_S$ wysyła zapytanie o $P_{SA}ID$ do $C$.
+  \item $C$ przeszukuje swoją bazę informacji powiązań identyfikatorów i w odpowiedzi wysyła:
     \begin{enumerate}
       \item listę $P_{NA}ID$ jeśli jakieś powiązania zostały odnalezione, oraz
-      \item listę $L_N$, które $L_S$ powinno odpytać, ponieważ nie wiadomo, czy nie pojawiły się tam dane pacjenta
+      \item listę $L_N$, które $L_S$ powinno odpytać, ponieważ nie wiadomo, czy nie pojawiły się tam dane pacjenta.
     \end{enumerate}
-  \item Jeśli $C$ odpowiedziało listą $L_N$ do odpytania, to $L_S$ odpytuje je równolegle o listę $P_{NA}ID$,
-  podając w zapytaniu dane osobowe pacjenta oraz $P_{SA}ID$.
-  \item Za każdym razem kiedy $L_S$ otrzymuje nowe $P_{NA}ID$ odpytuje powiązane z nim $L_N$ o dostępne dane medyczne i bezpośrednio
-  po otrzymaniu odpowiedzi prezentuje je użytkownikowi.
-  \item Za każdym razem kiedy odpytane $L_N$ znajdzie u siebie pacjenta o odpowiednich danych osobowych, to wysyła do $C$ powiadomienie
-  o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
+  \item Jeśli $C$ odpowiedziało listą $L_N$ do odpytania, to $L_S$ odpytuje je równolegle o listę $P_{NA}ID$, podając w zapytaniu dane osobowe pacjenta oraz $P_{SA}ID$.
+  \item Za każdym razem kiedy $L_S$ otrzymuje nowe $P_{NA}ID$, odpytuje powiązane z nim $L_N$ o dostępne dane medyczne i bezpośrednio po otrzymaniu odpowiedzi prezentuje je użytkownikowi.
+  \item Za każdym razem kiedy odpytane $L_N$ znajdzie u siebie pacjenta o odpowiednich danych osobowych, to wysyła do $C$ powiadomienie o dopasowaniu $P_{SA}ID$ z $P_{NA}ID$.
   \item $C$ na podstawie powiadomień o powiązaniu $P_{SA}ID$ z $P_{NA}ID$ otrzymywanych od $L_N$ buduje bazę powiązań identyfikatorów.
-  \item Jeśli nastąpiło dopasowanie identyfikatorów pacjenta w różnych LSS, a po przesłaniu jego danych osobowych okazuje się, że są one różne, to użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych. W ramach obsługi zgłoszenia niewłaściwych danych administrator powinien mieć możliwość usunięcia błędnego powiązania z bazy w węźle centralnym
-  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic $L_S$ będzie reagował w następujący sposób:
+  \item Jeśli nastąpiło dopasowanie identyfikatorów pacjenta w różnych LSS, a po przesłaniu jego danych osobowych okazuje się, że są one różne, to użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła, na którym wykryto różnice, powinien dostać zgłoszenie obsługi niewłaściwych danych. W ramach obsługi zgłoszenia niewłaściwych danych administrator powinien mieć możliwość usunięcia błędnego powiązania z bazy w węźle centralnym.
+  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic, $L_S$ będzie reagował w następujący sposób:
    \begin{enumerate}
-      \item zgodność pól: imię, nazwisko; niezgodność pól: pesel lub data urodzenia; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
-      \item zgodność pól: pesel lub data urodzenia, nazwisko; niezgodność pól: imię ; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
-      \item zgodność pól: pesel lub data urodzenia, imię; niezgodność pól: nazwisko ; akcja: użytkownik powinien być o tym wyraźnie poinformowany
-      \item niezgodność co najmniej dwóch pól; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych
+      \item zgodność pól: imię, nazwisko; niezgodność pól: PESEL lub data urodzenia; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła, na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych,
+      \item zgodność pól: PESEL lub data urodzenia, nazwisko; niezgodność pól: imię ; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice, powinien dostać zgłoszenie obsługi niewłaściwych danych,
+      \item zgodność pól: PESEL lub data urodzenia, imię; niezgodność pól: nazwisko ; akcja: użytkownik powinien być o tym wyraźnie poinformowany,
+      \item niezgodność co najmniej dwóch pól; akcja: użytkownik powinien być o tym wyraźnie poinformowany, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych.
    \end{enumerate}
-  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic $L_S$ będzie sprawdzał stopień dopasowania pól, w których występują różnice. Jeżeli stopień dopasowania jest odpowiednio wysoki (np. brak jednej litery w jednym z pól) to $L_N$ powinien o tym wyraźnie poinformować użytkownika, a administrator węzła na którym wykryto różnice powinien dostać zgłoszenie obsługi niewłaściwych danych 
+  \item Jeśli dane osobowe wprowadzone przy wyszukiwaniu pacjenta różnią się od danych osobowych zawartych w danych medycznych udostępnionych przez $L_N$, to w zależności od istotności różnic $L_S$ będzie sprawdzał stopień dopasowania pól, w których występują różnice. Jeżeli stopień dopasowania jest odpowiednio wysoki (np. brak jednej litery w jednym z pól) to $L_N$ powinien o tym wyraźnie poinformować użytkownika, a administrator węzła, na którym wykryto różnice, powinien dostać zgłoszenie obsługi niewłaściwych danych.
 \end{enumerate}
 
 \section{Dostęp do opisów badań}
 
-Ze względu na utrudnienia w integracji Systemu z LSS typu RIS i HIS, które zwykle przechowują opisu badań, należy stworzyć dwa moduły realizujące dostęp do opisów badań przechowywanych w LSS i niedostępnych poprzez DICOM. Te moduły to:
+Ze względu na utrudnienia w integracji Systemu z LSS typu RIS i HIS, które zwykle przechowują opisy badań, należy stworzyć dwa moduły realizujące dostęp do opisów badań przechowywanych w LSS i niedostępnych poprzez DICOM. Te moduły to:
 \begin{description}
-  \item[Repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację wyników badań. W sytuacji gdy system RIS/HIS nie udostępnia wyników badań URI, wyniki badań są zbierane w repozytorium opisów. Wyniki badań i ich aktualizacje, są przesyłane do repozytorium opisów w komunikatach HL7 przez systemy RIS/HIS. Repozytorium opisów przechowuje informacje o zarejestrowaniu pacjenta, zarejestrowaniu badania, statusie badania, wyniku badania. Repozytorium opisów można zasilić wynikami badań poprzez zbiorcze wysłanie wyników badań z systemu RIS/HIS do repozytorium opisów.
+  \item[Repozytorium opisów] Moduł odpowiedzialny za zbieranie, przechowywanie i aktualizację wyników badań. W sytuacji, gdy system RIS/HIS nie udostępnia wyników badań URI, wyniki badań są zbierane w repozytorium opisów. Wyniki badań i ich aktualizacje są przesyłane do repozytorium opisów w komunikatach HL7 przez systemy RIS/HIS. Repozytorium opisów przechowuje informacje o zarejestrowaniu pacjenta, zarejestrowaniu badania, statusie badania, wyniku badania. Repozytorium opisów można zasilić wynikami badań poprzez zbiorcze wysłanie wyników badań z systemu RIS/HIS do repozytorium opisów.
   \item[Moduł udostępniania opisów] Moduł działa na węźle lokalnym i jego zadaniem jest udostępnienie dla tego węzła wyników badań. Wyniki badań mogą znajdować się w systemach RIS/HIS lub być dostępne w lokalnym repozytorium opisów. Moduł umożliwia dostęp do wyników badań poprzez HTTP zgodnie z filozofią REST. Opisy muszą mieć ustandaryzowaną strukturę i być możliwe do pobrania w następujących formatach: HTML czytelny dla człowieka po wyświetleniu w przeglądarce WWW, XML, JSON. Moduł udostępniania opisów w węźle lokalnym pobiera wyniki badań w celu ich udostępnienia w następujący sposób:
   \begin{enumerate}
-    \item przez przekierowanie zapytania o wynik badania bezpośrednio do lokalnego systemu RIS/HIS z użyciem URI  jeżeli system RIS/HIS oferuje taką funkcjonalność,
-    \item przez odczytanie wyniku badania z lokalnego repozytorium opisów utworzonego na podstawie danych otrzymywanych z LSS (HIS, RIS)
+    \item przez przekierowanie zapytania o wynik badania bezpośrednio do lokalnego systemu RIS/HIS z użyciem URI, jeżeli system RIS/HIS oferuje taką funkcjonalność,
+    \item przez odczytanie wyniku badania z lokalnego repozytorium opisów utworzonego na podstawie danych otrzymywanych z LSS (HIS, RIS).
   \end{enumerate}
 
 \end{description}
@@ -485,7 +480,7 @@ Ze względu na utrudnienia w integracji Systemu z LSS typu RIS i HIS, które zwy
 
 W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomocą protokołu HL7. Obsługiwane powinny być poniżej wymienione scenariusze.
 
-\subsection{LSS (RIS/HIS) do repozytorium opisów}
+\subsection{Z LSS (RIS/HIS) do repozytorium opisów}
 
 \begin{enumerate}
   \item System RIS/HIS wysyła komunikat do repozytorium opisów z informacją o zarejestrowaniu pacjenta, komunikat HL7 ADT A01. Na podstawie rejestracji zarejestrowania pacjenta węzeł lokalny może rozpocząć procedurę wyszukiwania badań pacjenta w innych węzłach lokalnych.
@@ -493,12 +488,12 @@ W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomo
     \begin{enumerate}
       \item zarejestrowaniu badania,
       \item rozpoczęciu badania,
-      \item zakończeniu badania,
+      \item zakończeniu badania.
     \end{enumerate}
   \item System RIS/HIS wysyła komunikat HL7 ORU R01 do repozytorium opisów z wynikiem badania.
 \end{enumerate}
 
-\subsection{repozytorium opisów do LSS (RIS/HIS)}
+\subsection{Z repozytorium opisów do LSS (RIS/HIS)}
 
 \begin{enumerate}
   \item Repozytorium opisów wysyła wynik do systemu RIS/HIS za pomocą komunikatu HL7 ORU R01.
@@ -508,43 +503,40 @@ W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomo
 
 \section{Opis interfejsu użytkownika}
 
+TODO
+
 \section{Opis węzła centralnego}
+
 Zadania węzła centralnego:
-\begin{enumerate}
-\item utrzymanie bazy informacji o danych medycznych,
-\item utrzymanie bazy powiązań identyfikatorów,
-\item routing zapytań,
-\item przyjmowanie od węzłów lokalnych informacji o dostępnych danych medycznych,
-\item przyjmowanie od węzłów lokalnych informacji o powiązaniach identyfikatorów pacjentów,
-\end{enumerate}
+  \begin{enumerate}
+    \item utrzymanie bazy informacji o danych medycznych,
+    \item utrzymanie bazy powiązań identyfikatorów,
+    \item routing zapytań,
+    \item przyjmowanie od węzłów lokalnych informacji o dostępnych danych medycznych,
+    \item przyjmowanie od węzłów lokalnych informacji o powiązaniach identyfikatorów pacjentów.
+  \end{enumerate}
 
 \section{Opis węzła lokalnego}
 Zadania węzła lokalnego:
-\begin{enumerate}
-\item Udostępnianie interfejsu użytkownika niezbędnego do prowadzania danych osobowych pacjentów
-      oraz przeglądania pozyskanych danych medycznych.
-\item Informowanie węzła centralnego o dostępnych w LSS danych medycznych (budowa bazy informacji o danych medycznych)
-\item Informowanie węzła centralnego o odkrytych powiązaniach między identyfikatorami pacjentów
-\item Udostępnianie danych medycznych uprawnionym zdalnym węzłom lokalnym
+  \begin{enumerate}
+    \item Udostępnianie interfejsu użytkownika niezbędnego do prowadzania danych osobowych pacjentów
+          oraz przeglądania pozyskanych danych medycznych.
+    \item Informowanie węzła centralnego o dostępnych w LSS danych medycznych (budowa bazy informacji o danych medycznych)
+    \item Informowanie węzła centralnego o odkrytych powiązaniach między identyfikatorami pacjentów
+    \item Udostępnianie danych medycznych uprawnionym zdalnym węzłom lokalnym
+  \end{enumerate}
 
 \section{Konfigurowalność}
 
 \begin{itemize}
-  \item mapowanie zapytania o pacjenta na DICOM
-  \item mapowanie odpowiedzi z LSS na ustalony XML obowiązujący w Systemie
-  \item możliwość określenia zestawu zapytań wysyłanych do LSS (o jakie atrybuty i w jakiej kolejności
-  pytamy przy szukaniu pacjenta w LSS)
+  \item TODO możliwość określenia zestawu zapytań wysyłanych do LSS (o jakie atrybuty i w jakiej kolejności pytamy przy szukaniu pacjenta w LSS)
 \end{itemize}
 
 TODO - Bartek i Rafał
-
+\begin{enumerate}
 \item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
   \begin{enumerate}
-  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą
-        się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celu trzeba przewidzieć
-        w tworzonym oprogramowaniu interfejs do tworzenia standaryzacji danych osobowych postaci jednolitej
-        dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania
-        na jednoznaczny identyfikator pacjenta na poziomie systemu
+  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celu trzeba przewidzieć w tworzonym oprogramowaniu interfejs do tworzenia standaryzacji danych osobowych postaci jednolitej dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania na jednoznaczny identyfikator pacjenta na poziomie systemu
   \item ma za zadanie przyjmować od oprogramowania szpitalnego informacje o zajściu zdarzenia dot.
         pacjenta (np. poprzez HL7)
   \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując
@@ -563,6 +555,7 @@ TODO - Bartek i Rafał
   \item udostępnianie danych medycznych pacjentów innym węzłom lokalnym jak opisane w pkt.  4.3.1.3.
   \item pobieranie danych z innych węzłów lokalnych
   \end{enumerate}
+
 \end{enumerate}
 
 \end{document}
