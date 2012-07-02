@@ -110,13 +110,19 @@ Interfejs administracyjny musi posiadać następującą funkcjonalność:
 
   \item System może być źródłem trzech typów komunikatów, których obsługa jest realizowana poprzez interfejs użytkownika:
     \begin{description}
-      \item[Alerty] komunikaty o najwyższym priorytecie - są generowane programowo i sygnalizują wystąpienie sytuacji potencjalnie groźnych. Np wystąpienie dwóch różnych nazwisk przypisanych w różnych węzłach lokalnych do tego samego numeru PESEL może być efektem pomyłki i grozić utratą integralności danych. W klasie alertów mieszczą się też komunikaty o błędach w działaniu oprogramowania. Komunikaty o błędach w miarę możliwości powinny zawierać informację pozwalającą szybko zidentyfikować ich charakter (np. źródło, nr linii, kod błędu itp.), TODO: jeśli to ma być w interfejsie użytkownika/administratora, to raczej powinna chyba się pojawić nazwa modułu, jego funkcji i zrozumiały opis problemu,
+      \item[Alerty] Komunikaty informujące o nadzwyczajnych sytuacjach związanych z nieprawidłowym działaniem systemu, które mogą powodować niestabilną pracę lub blokadę pracy systemu, np. wykryte stany nieustalone, niespójność wewnętrznych struktur danych, błędy w konfiguracji., brak miejsca w zasobach dyskowych, utrata łączności z centralą itp. Alerty muszą być prezentowane natychmiast po ich wykryciu wszystkim zainteresowanym, w sposób, który zapewni duże prawdopodobieństwo ich przeczytania (np. czerwone okienko typu pop-up pojawiające się na środku ekranu, wymagające reakcji użytkownika w celu jego zamknięcia).
 
-      \item[Ostrzeżenia] komunikaty o średnim priorytecie sygnalizują nieprawidłowości w działaniu systemu - np. przeterminowanie badania, brak połączenia pomiędzy węzłami itp. Ostrzeżenia dotyczą wydarzeń mniejszej wagi niż alerty. Nie niosą informacji o zdarzeniach zagrażających stabilności systemu. Ostrzeżenia również tworzono są programowo. TODO Maciej: czy przeterminowanie badania, to nieprawidłowość w działaniu systemu?
+      \item[Ostrzeżenia] Komunikaty sygnalizujące nieprawidłowości lub odstępstwa od prawidłowych przebiegów procesów, które są obsługiwane przez system i stanowią część work-flow, ale wymagają szczególnej uwagi użytkownika. Np. przekroczenie czasu na opis badania, brak połączenia z danym węzłem, niezgodność danych pacjentów itp. Ostrzeżenia powinny być prezentowane natychmiast po ich wykryciu wszystkim zainteresowanym, w sposób, który zwiększy prawdopodobieństwo ich przeczytania (np. niewielkie, ale odznaczające się okienko typu pop-up w rogu ekranu, które użytkownik może ukryć, ale nie jest to konieczne aby mógł kontynuować swoją pracę).
 
-      \item[Zawiadomienia] komunikaty wysyłane przez użytkowników systemu, którzy mogą dowolnie zdefiniować ich treść. Wysłanie zawiadomienia powinno być możliwe z każdego poziomu interfejsu. W miarę możliwości powinien istnieć mechanizm umożliwiający użytkownikowi intuicyjny sposób zgłoszenia sytuacji awaryjnej (np. wykonanie zrzutu ekranu). TODO Maciej: z poziomu web raczej nie można zrobić screenshota
+      \item[Zawiadomienia] Komunikaty sygnalizujące postęp w przebiegu procesów związanych z normalną pracą systemu. Np. rozpoczęcie i zakończenie wysyłania badania na węzeł, otrzymanie opisu badania, zakończenie przeszukiwania system w poszukiwaniu danych medycznych pacjenta. Zawiadomienia powinny być prezentowane w sposób widoczny dla użytkownika, ale nie powinny przerywać jego normalnej pracy.
     \end{description}
 
+  \item Cechy ogólne komunikatów:
+  \begin{enumerate}
+    \item wszystkie komunikaty powinny zawierać informację pozwalającą szybko zidentyfikować ich źródło oraz charakter, a w przypadku komunikatów o błędach, w miarę możliwości sugerowane rozwiązanie/rozwiązania,
+    \item komunikaty muszą być archiwizowane w logu; log musi mieć interfejs użytkownika umożliwiający efektywne przeglądanie go w wybranym okresie, filtrowanie pod kątem określonego typu i treści komunikatu oraz usuwanie z logu przefiltrowanych komunikatów; usuwanie komunikatów możliwe jest tylko przez administratora węzła i wymaga dodatkowego potwierdzenia chęci wykonania operacji,
+    \item komunikaty powinny być prezentowane zainteresowanemu użytkownikowi niezależnie od tego w którym miejscu interfejsu użytkownika się znajduje,
+  \end{enumerate}
 \end{enumerate}
 
 \subsection{Interfejs administracyjny węzła centralnego}
@@ -128,34 +134,29 @@ Interfejs administracyjny musi umożliwiać przeprowadzenie następujących czyn
 
 \end{enumerate}
 
-\section{Konfigurowalność}
+\section{Mapowanie danych między LSS, a systemem}
 
-TODO Seweryn: zmienić sekcję konfigurowalność na mapowanie
+Ogólna funkcjonalność mapowania:
+\begin{enumerate}
+  \item Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
+  \item Mapowanie musi działać w obu kierunkach, tzn. zarówno kiedy dane są importowane do systemu (z LSS) jak i eksportowane na zewnątrz.
+  \item Musi istnieć mechanizm filtrowania, dzięki któremu będzie można określić, jakie reguły mapujące mają być użyte, w zależności od wartości określonych pól importowanych danych (np. wartości pola w pliku DICOM), bądź wewnętrznej struktury danych systemu (odpowiednio przy imporcie i eksporcie danych). Ma to na celu umożliwienie stosowania różnych mapowań np. w zależności od tego z jakiego źródła pochodzi plik DICOM lub komunikat HL7.
+  \item W szczególności, mapowanie ma umożliwić automatyczne wypełnianie wszystkich możliwych pól formularza w interfejsie użytkownika związanym z importowanymi lub eksportowanymi danymi. Np. przy definicji zlecenia  pole typ badania powinno być automatycznie ustawione na podstawie danych z załączonych do niego wyników badania. Przy czym, przy pozyskiwaniu danych do auto-wypełniania, powinno się ograniczyć do niezbędnego minimum ilość zapytań do LSS i ilość ściągniętych danych.
+  \item Reguła mapująca powinna umożliwiać wskazanie pola struktury zewnętrznej (tagu pliku DICOMm pola komunikatu HL7), które zawiera interesujące dane i przypisanie go do określonego pola w wewnętrznej strukturze danych systemu wraz z określeniem przetwarzania wartości poprzez:
+    \begin{enumerate}
+      \item użycie wyrażeń regularnych do modyfikacji wartości pola,
+      \item określenie słownika mapującego określone słowa kluczowe występujące w polu pliku DICOM na odpowiadające im słowa kluczowe zdefiniowane w wewnętrznej strukturze danych systemu.
+    \end{enumerate}
+
+\end{enumerate}
 
 \subsection{Komunikacja HL7}
 
-TODO Seweryn: wyekstrahować wspólne cechy obu mapowań i przenieść do nadrzędnej sekcji
-
-Interfejs komunikacji HL7 musi umożliwiać mapowane pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy, może zostać przetłumaczony na wewnętrzną strukturę danych systemu. Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
-
-TODO Seweryn: przenieść opis modułu udostępniania do systemu metadanych i rozwinąć go
-Moduł udostępniania opisów w węźle lokalnym można konfigurować poprzez definicje URI, zakresu odpowiedzi i formy odpowiedzi (format HTML, XML). Konfiguracja (np. w zakresie formatowania odpowiedzi) może być dynamiczna na podstawie URI. 
+Interfejs komunikacji HL7 musi umożliwiać mapowane pól komunikatów HL7 jeden do wielu. Oznacza to, że przychodzący komunikat HL7, niezależnie od systemu nadawcy, może zostać przetłumaczony na wewnętrzną strukturę danych systemu.
 
 \subsection{Mapowanie tagów DICOM}
 
-Komunikacja z lokalnymi systemami szpitalnymi LSS za pomocą protokołu DICOM musi obsługiwać możliwość elastycznego konfigurowania mapowania wartości zapisanych w tagach DICOM na wewnętrzne struktury danych systemu. Mapowanie powinno umożliwiać wskazanie pola (tagu) pliku DICOM, które zawiera interesujące dane i przypisanie go do określonego pola w wewnętrznej strukturze danych systemu wraz z określeniem przetwarzania wartości poprzez:
-\begin{enumerate}
-  \item użycie wyrażeń regularnych do modyfikacji wartości pola,
-  \item określenie słownika mapującego określone słowa kluczowe występujące w polu pliku DICOM na odpowiadające im słowa kluczowe zdefiniowane w wewnętrznej strukturze danych systemu.
-\end{enumerate}
-
-Mapowanie musi działać w obu kierunkach, tzn. zarówno kiedy plik DICOM importowany jest z LSS, jak i kiedy jest do niego eksportowany.
-
-Konfiguracja mapowań musi być możliwa do przeniesienia pomiędzy węzłami. Konfiguracja mapowań powinna być zapisana w plikach konfiguracyjnych zrozumiałych dla użytkownika.
-
-Musi też istnieć mechanizm filtrowania, dzięki któremu będzie można określić, jakie reguły mapujące mają być użyte, w zależności od wartości określonych pól pliku DICOM, bądź wewnętrznej struktury danych systemu (odpowiednio przy imporcie i eksporcie danych). Ma to na celu umożliwienie stosowania różnych mapowań np. w zależności od tego z jakiego źródła plik DICOM pochodzi.
-
-W szczególności, mapowanie ma umożliwić automatyczne wypełnianie wszystkich możliwych pól zlecenia (np. pola typ badania) po załączeniu do niego wyników badania, używając do tego celu dane pozyskane z plików DICOM tego badania. Przy pozyskiwaniu danych z plików DICOM powinno się ograniczyć do niezbędnego minimum ilość zapytań do LSS i ilość ściągniętych plików.
+Komunikacja z lokalnymi systemami szpitalnymi LSS za pomocą protokołu DICOM musi obsługiwać możliwość elastycznego konfigurowania mapowania wartości zapisanych w tagach DICOM na wewnętrzne struktury danych systemu.
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
@@ -503,7 +504,21 @@ W celu dostępu do opisów badań może być konieczna komunikacja z LSS za pomo
 
 \section{Opis interfejsu użytkownika}
 
-TODO
+Cechy interfejsu:
+\begin{enumerate}
+  \item główny panel interfejsu wyszukiwania składa się z kompaktowego formularza do wprowadzania atrybutów szukanych danych medycznych (dane pacjenta, takie jak: imię, nazwisko, data urodzenia, numer PESEL) oraz listy wyników
+  \item wyszukiwać można za pomocą następujących zestawów atrybutów:
+  \begin{enumerate}
+    \item imię, nazwisko, PESEL,
+    \item imię, nazwisko, data urodzenia,
+    \item PESEL
+  \end{enumerate}
+  \item po wprowadzeniu prawidłowych atrybutów użytkownik może uruchomić wyszukiwanie; wyniki wyszukiwania pojawiają się na liście wyników na bieżąco, kiedy tylko spłyną do węzła, który wyszukiwanie uruchomił; niedopuszczalne jest prezentowanie wyników dopiero po zakończeniu całej procedury wyszukiwania,
+  \item użytkownik może w każdej chwili przerwać wyszukiwanie; o przerwaniu wyszukiwania powinny być powiadomione odpowiednie węzły, aby w możliwie najkrótszym czasie przerwały pracę,
+  \item lista wyników powinna prezentować dane pozwalające użytkownikowi zweryfikować trafność wyszukania i ocenić przydatność danego wyniku pod kątem oczekiwań; prezentowane powinny być takie dane jak: dane pacjenta, informacje o naturze znalezionych danych medycznych (data powstania danych, czy jest to wynik badania, jeśli tak, to jakiego badania)
+  \item wyniki na liście powinny być sortowane pod dacie powstania danych medycznych,
+  \item kliknięcie na liście na wynik powinno powodować pokazanie jego bardziej szczegółowych danych, w tym źródła danych i informacji o możliwości pozyskania danych (np. dane kontaktowe bezpośrednio do jednostki przechowującej te dane).
+\end{enumerate}
 
 \section{Opis węzła centralnego}
 
@@ -526,36 +541,13 @@ Zadania węzła lokalnego:
     \item Udostępnianie danych medycznych uprawnionym zdalnym węzłom lokalnym
   \end{enumerate}
 
-\section{Konfigurowalność}
+\section{Optymalizacja komunikacji z LSS}
 
-\begin{itemize}
-  \item TODO możliwość określenia zestawu zapytań wysyłanych do LSS (o jakie atrybuty i w jakiej kolejności pytamy przy szukaniu pacjenta w LSS)
-\end{itemize}
-
-TODO - Bartek i Rafał
+Zapytania do LSS powinny być tak dobrane, aby z jednej strony ograniczyć możliwość wystąpienia fałszywie negatywnego wyniku, a z drugiej nie generować zbyt dużego obciążenia dla LSS i nie wydłużać czasu trwania wyszukiwania. Aby to osiągnąć należy zapewnić możliwość konfiguracji zapytań per odpytywany LSS. Konfiguracja powinna umożliwiać:
 \begin{enumerate}
-\item komunikacja z istniejącymi lokalnymi systemami szpitalnymi:
-  \begin{enumerate}
-  \item należy założyć wykorzystanie w szpitalach oprogramowania pochodzącego od różnych dostawców i mogą się pojawić różnice nawet zapisie danych osobowych w plikach DICOM. W tym celu trzeba przewidzieć w tworzonym oprogramowaniu interfejs do tworzenia standaryzacji danych osobowych postaci jednolitej dla systemu. Same dane nie będą jednak przechowywane w węźle lokalnym – posłużą do stworzenia odwzorowania na jednoznaczny identyfikator pacjenta na poziomie systemu
-  \item ma za zadanie przyjmować od oprogramowania szpitalnego informacje o zajściu zdarzenia dot.
-        pacjenta (np. poprzez HL7)
-  \item ma za zadanie pośredniczyć w udostępnianiu danych medycznych do innych węzłów lokalnych realizując
-        ich zapytanie. W tym celu po zidentyfikowaniu pacjenta wysyła do takiego systemu linki do lokalnych
-        plików (np. DICOM) z jego danymi medycznymi
-  \end{enumerate}
-
-\item komunikacja z węzłem centralnym
-  \begin{enumerate}
-  \item przekazywane są powiązania informacje o jednoznacznych identyfikatorach pacjentów
-  \item opcjonalnie następuje synchronizacja z węzłem centralnym, o której mowa w pkt. 4.2.4.
-  \end{enumerate}
-
-\item komunikacja z innymi węzłami lokalnymi
-  \begin{enumerate}
-  \item udostępnianie danych medycznych pacjentów innym węzłom lokalnym jak opisane w pkt.  4.3.1.3.
-  \item pobieranie danych z innych węzłów lokalnych
-  \end{enumerate}
-
+  \item określenie, czy należy wykonać zapytanie o dane medyczne pacjenta bez użycia numeru PESEL, w przypadku gdy w LSS istnieją dane medyczne niepowiązane z numerem PESEL,
+  \item określenie, czy w zapytaniu bez numeru PESEL należy użyć daty urodzenia pacjenta otrzymanej z numeru PESEL.
 \end{enumerate}
+
 
 \end{document}
